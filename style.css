@@ -729,3 +729,29 @@ body.menu-open .nav__menu span:nth-child(3) {
 }
 
 
+
+/* phones: nav + hero take 70% of the screen height */
+@media (max-width: 760px) {
+  .screen {
+    height: 70vh;
+    height: 70svh;
+    min-height: 500px;
+  }
+
+  .hero__word {
+    bottom: 214px;
+  }
+
+  .hero__word h1 {
+    font-size: 23vw;
+  }
+
+  .mini {
+    width: 148px;
+    padding: 10px;
+  }
+
+  .mini__art {
+    width: 70%;
+  }
+}
