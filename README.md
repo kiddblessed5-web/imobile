@@ -13,10 +13,17 @@ Plain HTML, CSS and JavaScript. Open `index.html` in a browser, or deploy the fo
 | `cart.html` | Cart with quantities, delivery fee / free-delivery bar and totals |
 | `contact.html` | Let's connect card, call / WhatsApp / email / location / hours, and a contact form |
 
+## Admin dashboard
+Open `admin/index.html` (or `/admin/` when deployed). It controls products, orders, the contact-form inbox, newsletter subscribers, all site text and settings, and sends emails. It runs in demo mode out of the box. **See [ADMIN.md](ADMIN.md)** for sign-in details and how to go live with Supabase + Resend.
+
 ## Files
 - `style.css` — base styles, nav, cursor, hero
 - `pages.css` — every other section and page
-- `data.js` — **the product catalogue** (names, prices, colours, specs) and the drawn device artwork
+- `config.js` — Supabase keys (empty = demo mode)
+- `store.js` — data layer shared by the store and the dashboard
+- `admin/` — the dashboard
+- `supabase/` — database schema and the email Edge Functions
+- `data.js` — **the starter product catalogue** (names, prices, colours, specs) and the drawn device artwork
 - `script.js` — shared: cart (saved in the browser), menu, custom cursor, scroll animations, countdown
 - `home.js`, `shop.js`, `product.js`, `cart.js` — page-specific code
 
@@ -26,7 +33,7 @@ Plain HTML, CSS and JavaScript. Open `index.html` in a browser, or deploy the fo
 - **Testimonials:** the home page section holds `[placeholders]`. Replace them with real customer reviews (with permission) before going live.
 
 ## Editing
-- **Products:** edit `CATALOGUE` in `data.js`. Add `was:` for a sale price (it then shows on the Deals page).
+- **Products, prices, stock, texts, delivery fees:** use the dashboard (`/admin`). `DEFAULT_CATALOGUE` in `data.js` is only the starter set.
 - **Real photos:** add `image: "assets/products/your-photo.jpg"` to any product; it replaces the drawn artwork.
 - **Storage pricing:** each storage step adds KSh 15,000 — change it in `product.js` and `cart.js`.
 - **Delivery:** `FREE_DELIVERY_FROM` and `DELIVERY_FEE` at the top of `cart.js`.

@@ -3,6 +3,9 @@
    (cursor, menu, cart, scroll reveals, hero intro)
    ========================================================= */
 
+/* content + settings from the dashboard (filled in by Store.loadSite) */
+let SITE = { content: { ...DEFAULT_CONTENT }, settings: { ...DEFAULT_SETTINGS } };
+
 const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 
@@ -23,6 +26,11 @@ const Cart = {
     this.sync();
   },
   add(id, opts = {}) {
+    const prod = typeof findProduct === "function" ? findProduct(id) : null;
+    if (prod && prod.stock === 0) {
+      toast(`${prod.name} is sold out`, false);
+      return;
+    }
     const items = this.read();
     const color = opts.color ?? 0;
     const storage = opts.storage ?? null;
@@ -260,7 +268,9 @@ function countUp(el) {
 
 /* ---------------- COUNTDOWN (weekend deals) ---------------- */
 function nextSundayMidnight() {
-  // the coming Sunday at 23:59:59 (today, if today is Sunday)
+  // set in the dashboard (Content → Deals), otherwise the coming Sunday 23:59
+  const custom = SITE.content.deals_end && new Date(SITE.content.deals_end);
+  if (custom && !isNaN(custom) && custom > new Date()) return custom;
   const end = new Date();
   end.setDate(end.getDate() + ((7 - end.getDay()) % 7));
   end.setHours(23, 59, 59, 0);
@@ -298,12 +308,12 @@ function productCard(p, i = 0) {
     <article class="pcard" data-reveal="${i % 4}">
       <div class="pcard__media cut">
         <a href="product.html?id=${p.id}" class="pcard__link" aria-label="${p.name}"></a>
-        ${p.tag ? `<span class="badge">${p.tag}</span>` : ""}
+        ${p.stock === 0 ? `<span class="badge badge--out">Sold out</span>` : p.tag ? `<span class="badge">${p.tag}</span>` : ""}
         ${off ? `<span class="badge">−${off}%</span>` : ""}
         <div class="pcard__art">${productMedia(p)}</div>
         <span class="cut__notch"><span class="pcard__tagprice">${money(p.price)}</span></span>
-        <button class="pcard__buy" data-add="${p.id}" aria-label="Add ${p.name} to cart">
-          ${ICON_PLUS} Add to cart
+        <button class="pcard__buy" data-add="${p.id}" aria-label="Add ${p.name} to cart"${p.stock === 0 ? " disabled" : ""}>
+          ${p.stock === 0 ? "Sold out" : `${ICON_PLUS} Add to cart`}
         </button>
       </div>
       <h3 class="pcard__name"><a href="product.html?id=${p.id}">${p.name}</a></h3>
@@ -398,8 +408,8 @@ if (window.Lenis && !reduceMotion) {
   ).observe(document.body, { attributes: true, attributeFilter: ["class"] });
 }
 
-/* ---------------- CONTACT FORM (front-end only) ---------------- */
-document.addEventListener("submit", (e) => {
+/* ---------------- CONTACT FORM → dashboard inbox ---------------- */
+document.addEventListener("submit", async (e) => {
   const form = e.target.closest("[data-contact]");
   if (!form) return;
   e.preventDefault();
@@ -413,10 +423,51 @@ document.addEventListener("submit", (e) => {
     toast("Please fill in your name, email and message", false);
     return;
   }
-  // connect this to your email service / backend (Formspree, Supabase, etc.)
-  form.reset();
-  toast("Thanks — your message has been sent", false);
+  const btn = form.querySelector("[type=submit]");
+  btn.disabled = true;
+  const f = Object.fromEntries(new FormData(form));
+  try {
+    await Store.addMessage({
+      name: f.name.trim(),
+      email: f.email.trim(),
+      phone: (f.phone || "").trim(),
+      topic: f.topic || "General",
+      message: f.message.trim(),
+    });
+    form.reset();
+    toast("Thanks — your message has been sent", false);
+  } catch (err) {
+    console.error(err);
+    toast("Sorry, that didn't send. Please try again or call us.", false);
+  } finally {
+    btn.disabled = false;
+  }
 });
+
+/* ---------------- DASHBOARD CONTENT → PAGE ---------------- */
+function applyContent(content) {
+  $$("[data-c]").forEach((el) => {
+    const value = content[el.dataset.c];
+    if (value === undefined || value === null || value === "") return;
+    el.textContent = value;
+    const link = el.dataset.cLink;
+    if (link && el.tagName === "A") {
+      const digits = String(value).replace(/[^\d+]/g, "");
+      el.href =
+        link === "tel" ? `tel:${digits}`
+        : link === "wa" ? `https://wa.me/${digits.replace(/^\+/, "")}`
+        : `mailto:${String(value).replace(/[\[\]]/g, "")}`;
+    }
+  });
+}
+
+function applySettings(settings) {
+  if (settings.accent && /^#[0-9a-f]{6}$/i.test(settings.accent)) {
+    const root = document.documentElement.style;
+    root.setProperty("--accent", settings.accent);
+    root.setProperty("--accent-dk", shade(settings.accent, -35));
+  }
+}
 
 /* ---------------- PRELOADER ---------------- */
 const preloader = $(".preloader");
@@ -463,7 +514,14 @@ function start() {
   setTimeout(init, preloader ? 350 : 0);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  const preloading = runPreloader();
+  const site = await Store.loadSite();
+  if (site.products) CATALOGUE = site.products;
+  SITE = { content: site.content, settings: site.settings };
+  applySettings(SITE.settings);
+  applyContent(SITE.content);
   document.dispatchEvent(new Event("page:render"));
-  runPreloader().then(start);
+  await preloading;
+  start();
 });

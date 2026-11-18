@@ -3,10 +3,12 @@ document.addEventListener("page:render", () => {
   /* ---------- Hero: featured product + brand count ---------- */
   const mini = $("[data-hero-product]");
   if (mini) {
-    const hp = findProduct(mini.dataset.heroProduct);
+    const hp = findProduct(SITE.content.hero_featured_id) || findProduct(mini.dataset.heroProduct) || CATALOGUE[0];
     if (hp) {
       $("[data-mini-art]", mini).innerHTML = productMedia(hp, 0);
       $("[data-mini-name]", mini).textContent = hp.name;
+      $(".mini__art", mini).href = `product.html?id=${hp.id}`;
+      $("[data-mini-buy]", mini).dataset.add = hp.id;
       $("[data-mini-buy]", mini).lastChild.textContent = ` Buy ${money(hp.price)}`;
     }
   }
@@ -15,7 +17,9 @@ document.addEventListener("page:render", () => {
 
   // device artwork in category cards
   $$("[data-art]").forEach((el) => {
-    el.innerHTML = deviceArt(el.dataset.art, el.dataset.color);
+    // category cards: a real product photo where we have one, drawn artwork otherwise
+    const photo = { phone: "assets/products/phone-pro-silver.webp", watch: "assets/products/watch-ultra-orange.webp" }[el.dataset.art];
+    el.innerHTML = photo ? `<img src="${photo}" alt="" loading="lazy" />` : deviceArt(el.dataset.art, el.dataset.color);
   });
 
   /* ---------- Featured categories: arrow buttons ---------- */
@@ -80,11 +84,32 @@ document.addEventListener("page:render", () => {
     .slice(0, 2);
   $("[data-home-deals]").innerHTML = deals.map(productCard).join("");
 
-  /* ---------- Newsletter (front-end only — connect your email tool) ---------- */
-  $("[data-newsletter]")?.addEventListener("submit", (e) => {
+  /* ---------- Testimonials (edited in the dashboard: Content → Testimonials) ---------- */
+  (SITE.content.testimonials || []).forEach((t, i) => {
+    const card = $(`[data-testi="${i}"]`);
+    if (!card || !t) return;
+    if (t.quote) $("[data-tq]", card).textContent = t.quote;
+    if (t.name) $("[data-tn]", card).textContent = t.name;
+    if (t.detail) $("[data-td]", card).textContent = t.detail;
+    const initials = $("[data-ti]", card);
+    if (initials && t.name) {
+      const clean = t.name.replace(/[\[\]]/g, "").trim().split(/\s+/);
+      initials.textContent = ((clean[0]?.[0] || "") + (clean[1]?.[0] || "")).toUpperCase() || "★";
+    }
+  });
+
+  /* ---------- Newsletter → dashboard subscribers ---------- */
+  $("[data-newsletter]")?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    e.target.reset();
-    toast("Thanks — you're on the list", false);
+    const input = e.target.querySelector("input[type=email]");
+    try {
+      await Store.addSubscriber(input.value);
+      e.target.reset();
+      toast("Thanks — you're on the list", false);
+    } catch (err) {
+      console.error(err);
+      toast("Sorry, that didn't work. Please try again.", false);
+    }
   });
 
   $$("[data-year]").forEach((el) => (el.textContent = new Date().getFullYear()));

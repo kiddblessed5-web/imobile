@@ -100,11 +100,11 @@
     <main class="hero">
       <div class="hero__bg" aria-hidden="true"></div>
 
-      <p class="hero__lede">Genuine phones, wearables and accessories — with warranty on every device.</p>
+      <p class="hero__lede" data-c="hero_lede">Genuine phones, wearables and accessories — with warranty on every device.</p>
 
       <div class="hero__stat">
         <b><span data-count="0" data-brand-count>0</span>+</b>
-        <small>Brands in stock</small>
+        <small data-c="hero_stat_label">Brands in stock</small>
       </div>
 
       <div class="hero__word">
@@ -132,7 +132,7 @@
       <div class="shead">
         <div data-reveal>
           <h2 class="stitle">Featured categories</h2>
-          <p class="ssub">Shop by your favourite category in seconds.</p>
+          <p class="ssub" data-c="categories_sub">Shop by your favourite category in seconds.</p>
         </div>
         <div class="shead__right" data-reveal="1">
           <a href="phones.html" class="slink">Check all categories <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
@@ -189,7 +189,7 @@
       <div class="shead">
         <div data-reveal>
           <h2 class="stitle">Hot picks for you</h2>
-          <p class="ssub">The devices everyone's asking for right now.</p>
+          <p class="ssub" data-c="picks_sub">The devices everyone's asking for right now.</p>
         </div>
         <div class="tabs" role="tablist" aria-label="Hot picks" data-reveal="1">
           <button role="tab" class="is-active" aria-selected="true" data-tab="phones">Phones</button>
@@ -252,8 +252,8 @@
       <div class="deals-band">
         <div class="deals-band__intro" data-reveal>
           <div>
-            <h2 class="stitle">Prices drop now</h2>
-            <p class="ssub">Limited-time prices on phones, wearables and accessories. When the clock hits zero, they're gone.</p>
+            <h2 class="stitle" data-c="deals_title">Prices drop now</h2>
+            <p class="ssub" data-c="deals_text">Limited-time prices on phones, wearables and accessories. When the clock hits zero, they're gone.</p>
           </div>
           <div>
             <div class="countdown" data-countdown aria-label="Time left on weekend deals">
@@ -284,33 +284,33 @@
       </div>
 
       <div class="testi">
-        <figure class="tcard tcard--big" data-reveal>
+        <figure class="tcard tcard--big" data-reveal data-testi="0">
           <div class="tcard__copy">
             <svg class="quote" viewBox="0 0 48 32" aria-hidden="true"><path d="M8 0h12L12 32H0zM34 0h12L38 32H26z"/></svg>
-            <blockquote>[Paste a real customer review here — what they bought, how delivery went, how they feel about it.]</blockquote>
+            <blockquote data-tq>[Paste a real customer review here — what they bought, how delivery went, how they feel about it.]</blockquote>
             <div class="stars" aria-label="5 out of 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg></div>
-            <figcaption><strong>[Customer name]</strong><span>[Town] · [Product bought]</span></figcaption>
+            <figcaption><strong data-tn>[Customer name]</strong><span data-td>[Town] · [Product bought]</span></figcaption>
           </div>
           <div class="tcard__photo" aria-hidden="true"></div>
         </figure>
 
         <div class="testi__side">
-          <figure class="tcard cut" data-reveal="1">
+          <figure class="tcard cut" data-reveal="1" data-testi="1">
             <svg class="quote" viewBox="0 0 48 32" aria-hidden="true"><path d="M8 0h12L12 32H0zM34 0h12L38 32H26z"/></svg>
             <div class="stars" aria-label="5 out of 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg></div>
-            <blockquote>[Short review from a real customer.]</blockquote>
+            <blockquote data-tq>[Short review from a real customer.]</blockquote>
             <figcaption class="tcard__who">
-              <span class="avatar">AB</span>
-              <span><strong>[Customer name]</strong><span>[Product bought]</span></span>
+              <span class="avatar" data-ti>AB</span>
+              <span><strong data-tn>[Customer name]</strong><span data-td>[Product bought]</span></span>
             </figcaption>
           </figure>
-          <figure class="tcard cut" data-reveal="2">
+          <figure class="tcard cut" data-reveal="2" data-testi="2">
             <svg class="quote" viewBox="0 0 48 32" aria-hidden="true"><path d="M8 0h12L12 32H0zM34 0h12L38 32H26z"/></svg>
             <div class="stars" aria-label="5 out of 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg></div>
-            <blockquote>[Short review from a real customer.]</blockquote>
+            <blockquote data-tq>[Short review from a real customer.]</blockquote>
             <figcaption class="tcard__who">
-              <span class="avatar">CD</span>
-              <span><strong>[Customer name]</strong><span>[Product bought]</span></span>
+              <span class="avatar" data-ti>CD</span>
+              <span><strong data-tn>[Customer name]</strong><span data-td>[Product bought]</span></span>
             </figcaption>
           </figure>
         </div>
@@ -321,8 +321,8 @@
   <!-- ============ NEWSLETTER ============ -->
   <section class="wrap news">
     <div>
-      <h2 class="stitle" data-reveal>Get new drops first</h2>
-      <p class="ssub" data-reveal="1">New arrivals and weekend deals, straight to your inbox.</p>
+      <h2 class="stitle" data-reveal data-c="news_title">Get new drops first</h2>
+      <p class="ssub" data-reveal="1" data-c="news_text">New arrivals and weekend deals, straight to your inbox.</p>
     </div>
     <div data-reveal="2">
       <form class="news__form" data-newsletter>
@@ -348,7 +348,7 @@
             </svg>
             <span class="logo__word">iMobile</span>
           </a>
-          <p>Genuine phones, wearables and accessories, with warranty and fast delivery.</p>
+          <p data-c="footer_about">Genuine phones, wearables and accessories, with warranty and fast delivery.</p>
           <div class="footer__social">
             <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle class="fill" cx="16.8" cy="7.2" r="1"/></svg></a>
             <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.6 2.2 4.3 5 4.5"/></svg></a>
@@ -379,10 +379,10 @@
         <div data-reveal="3">
           <h4>Visit us</h4>
           <ul class="footer__contact">
-            <li>[YOUR STORE ADDRESS]</li>
-            <li>[CITY]</li>
-            <li>[+254 7XX XXX XXX]</li>
-            <li>[hello@yourstore.co.ke]</li>
+            <li data-c="contact_address">[Your store address, City]</li>
+            <li data-c="contact_hours">[Mon–Sat, 9am–7pm]</li>
+            <li><a href="#" data-c="contact_phone" data-c-link="tel">[+254 7XX XXX XXX]</a></li>
+            <li><a href="#" data-c="contact_email" data-c-link="mailto">[hello@yourstore.co.ke]</a></li>
           </ul>
         </div>
       </div>
@@ -399,7 +399,9 @@
   </footer>
 
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="config.js"></script>
   <script src="data.js"></script>
+  <script src="store.js"></script>
   <script src="script.js"></script>
   <script src="home.js"></script>
 </body>

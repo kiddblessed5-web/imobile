@@ -4,7 +4,7 @@
    To use a real photo for any product, add  image: "assets/products/file.jpg"
    ========================================================= */
 
-const CATALOGUE = [
+const DEFAULT_CATALOGUE = [
   /* ---------------- PHONES ---------------- */
   {
     id: "aero-15-pro",
@@ -16,9 +16,10 @@ const CATALOGUE = [
     was: 179999,
     tag: "New",
     colors: [
-      { name: "Titanium", hex: "#bdb9b1" },
-      { name: "Graphite", hex: "#2c2c2f" },
-      { name: "Glacier", hex: "#cfd6dc" },
+      { name: "Silver", hex: "#c9cacc", image: "assets/products/phone-pro-silver.webp" },
+      { name: "Cosmic Orange", hex: "#e8853f", image: "assets/products/phone-pro-orange.webp" },
+      { name: "Burgundy", hex: "#6b1f2e", image: "assets/products/phone-pro-burgundy.webp" },
+      { name: "White", hex: "#eeeeec", image: "assets/products/phone-pro-white.webp" },
     ],
     storage: ["256GB", "512GB", "1TB"],
     blurb: "A titanium flagship with a pro triple camera, all-day battery and a 6.7\" 120Hz display.",
@@ -38,11 +39,7 @@ const CATALOGUE = [
     type: "phone",
     price: 104999,
     tag: "Bestseller",
-    colors: [
-      { name: "Obsidian", hex: "#1f1f22" },
-      { name: "Porcelain", hex: "#e9e5de" },
-      { name: "Sage", hex: "#a9b4a3" },
-    ],
+    colors: [{ name: "Sky Blue", hex: "#c9d9e8", image: "assets/products/phone-air-front.webp" }],
     storage: ["128GB", "256GB"],
     blurb: "Clean software, a brilliant camera and seven years of updates in a compact body.",
     specs: {
@@ -61,11 +58,7 @@ const CATALOGUE = [
     type: "phone",
     price: 89999,
     was: 99999,
-    colors: [
-      { name: "Onyx", hex: "#232326" },
-      { name: "Marble", hex: "#d8d6d2" },
-      { name: "Cobalt", hex: "#3d4a63" },
-    ],
+    colors: [{ name: "Mist Teal", hex: "#b9d3cf", image: "assets/products/phone-vivo-teal.webp" }],
     storage: ["128GB", "256GB"],
     blurb: "Flagship power for less: a bright AMOLED panel, fast charging and a tough glass back.",
     specs: {
@@ -84,10 +77,7 @@ const CATALOGUE = [
     type: "phone",
     price: 42999,
     tag: "Value",
-    colors: [
-      { name: "Ice", hex: "#d6dbe0" },
-      { name: "Navy", hex: "#2a3245" },
-    ],
+    colors: [{ name: "Ice Blue", hex: "#a9c1e3", image: "assets/products/phone-vivo-blue.webp" }],
     storage: ["128GB", "256GB"],
     blurb: "Everything you need for everyday: big battery, sharp screen, solid cameras.",
     specs: {
@@ -105,10 +95,7 @@ const CATALOGUE = [
     category: "phones",
     type: "phone",
     price: 69999,
-    colors: [
-      { name: "Carbon", hex: "#1c1c1e" },
-      { name: "Flare", hex: "#c9c3b8" },
-    ],
+    colors: [{ name: "Pearl White", hex: "#efeeec", image: "assets/products/phone-oppo-white.webp" }],
     storage: ["256GB", "512GB"],
     blurb: "Built for speed: 100W charging takes you from 0 to full in under 30 minutes.",
     specs: {
@@ -170,10 +157,7 @@ const CATALOGUE = [
     type: "phone",
     price: 54999,
     was: 61999,
-    colors: [
-      { name: "Bay", hex: "#9fb3c4" },
-      { name: "Charcoal", hex: "#2a2a2c" },
-    ],
+    colors: [{ name: "Sky Blue", hex: "#c3d6e6", image: "assets/products/phone-air-blue.webp" }],
     storage: ["128GB"],
     blurb: "The smart camera phone at a friendly price.",
     specs: {
@@ -197,9 +181,9 @@ const CATALOGUE = [
     was: 39999,
     tag: "New",
     colors: [
-      { name: "Chalk", hex: "#e3e1dc" },
-      { name: "Midnight", hex: "#202024" },
-      { name: "Moss", hex: "#8f9a86" },
+      { name: "Titanium Loop", hex: "#bdb7ae", image: "assets/products/watch-ultra-titanium.webp" },
+      { name: "Orange Loop", hex: "#e36a25", image: "assets/products/watch-ultra-orange.webp" },
+      { name: "Titanium Mesh", hex: "#cfccc6", image: "assets/products/watch-ultra-mesh.webp" },
     ],
     blurb: "Heart-rate, sleep and workout tracking with a bright always-on display.",
     specs: {
@@ -217,10 +201,7 @@ const CATALOGUE = [
     sub: "Smartwatches",
     type: "watch",
     price: 14999,
-    colors: [
-      { name: "Graphite", hex: "#2d2d30" },
-      { name: "Rose", hex: "#d9c3bb" },
-    ],
+    colors: [{ name: "Black & Amber", hex: "#2a2420", image: "assets/products/watch-ultra-black.webp" }],
     blurb: "Notifications, steps and sleep on your wrist for a full week per charge.",
     specs: {
       Display: '1.3" LCD',
@@ -368,6 +349,11 @@ const CATALOGUE = [
     },
   },
 ];
+
+/* The live catalogue. store.js replaces it with the products saved in the
+   admin dashboard (browser demo or Supabase) before the page renders. */
+const CATALOGUE_VERSION = 2; // bump when the starter photos/colours change
+let CATALOGUE = DEFAULT_CATALOGUE.map((p) => ({ visible: true, stock: 10, ...p }));
 
 /* ---------- helpers ---------- */
 const money = (n) => "KSh " + Math.round(n).toLocaleString("en-KE");
@@ -519,6 +505,7 @@ function deviceArt(type, color = "#2c2c2f") {
 
 /* product media: real photo if given, otherwise artwork */
 function productMedia(p, colorIndex = 0) {
-  if (p.image) return `<img src="${p.image}" alt="${p.name}" loading="lazy" />`;
+  const src = p.colors?.[colorIndex]?.image || p.colors?.[0]?.image || p.image;
+  if (src) return `<img src="${src}" alt="${p.name}" loading="lazy" />`;
   return deviceArt(p.type, p.colors[colorIndex].hex);
 }

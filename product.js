@@ -40,7 +40,7 @@ document.addEventListener("page:render", () => {
   if (!p.storage) storageWrap.remove();
 
   // storage upgrades add to the price (edit to your real pricing)
-  const storageExtra = (s) => (p.storage ? p.storage.indexOf(s) * 15000 : 0);
+  const storageExtra = (s) => (p.storage ? p.storage.indexOf(s) * (Number(SITE.settings.storage_step) || 0) : 0);
 
   function renderPrice() {
     const extra = storageExtra(storage);
@@ -60,7 +60,7 @@ document.addEventListener("page:render", () => {
 
   // thumbs + swatches
   $("[data-pd-thumbs]").innerHTML = p.colors
-    .map((c, i) => `<button type="button" aria-label="${c.name}">${deviceArt(p.type, c.hex)}</button>`)
+    .map((c, i) => `<button type="button" aria-label="${c.name}">${productMedia(p, i)}</button>`)
     .join("");
   $("[data-pd-swatches]").innerHTML = p.colors
     .map((c, i) => `<button type="button" class="swatch" style="background:${c.hex}" aria-label="${c.name}" title="${c.name}"></button>`)
@@ -96,9 +96,12 @@ document.addEventListener("page:render", () => {
     })
   );
 
-  $("[data-pd-add]").addEventListener("click", () =>
-    Cart.add(p.id, { color, storage, qty })
-  );
+  const addBtn = $("[data-pd-add]");
+  if (p.stock === 0) {
+    addBtn.disabled = true;
+    addBtn.textContent = "Sold out";
+  }
+  addBtn.addEventListener("click", () => Cart.add(p.id, { color, storage, qty }));
 
   // related: same category, then anything else
   const others = CATALOGUE.filter((x) => x.id !== p.id);
