@@ -755,3 +755,20 @@ body.menu-open .nav__menu span:nth-child(3) {
     width: 70%;
   }
 }
+
+/* phones/tablets: cart + menu float over the hero, no cut-out behind them */
+@media (max-width: 900px) {
+  body.has-hero:not(.scrolled) .nav__right {
+    background: transparent;
+  }
+
+  body.has-hero:not(.scrolled) .nav__right::before,
+  body.has-hero:not(.scrolled) .nav__right::after {
+    opacity: 0;
+  }
+
+  body.has-hero:not(.scrolled) .nav__icon {
+    background: var(--paper);
+    box-shadow: 0 6px 18px -10px rgba(23, 15, 44, 0.45);
+  }
+}
