@@ -101,6 +101,85 @@ $$(".menu a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") setMenu(false);
 });
+// tap outside the dropdown to close it
+document.addEventListener("click", (e) => {
+  if (!document.body.classList.contains("menu-open")) return;
+  if (e.target.closest(".menu, .nav__menu")) return;
+  setMenu(false);
+});
+
+/* ---------------- CUSTOM DROPDOWNS (sort, contact topic) ----------------
+   The real <select> stays in the page (forms + "change" events still work);
+   a styled button + list sits on top of it. */
+const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>';
+
+function enhanceSelect(sel) {
+  const wrap = sel.closest(".select");
+  if (!wrap || wrap.classList.contains("cselect")) return;
+  wrap.classList.add("cselect");
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "cselect__btn";
+  btn.setAttribute("aria-haspopup", "listbox");
+  btn.setAttribute("aria-expanded", "false");
+  if (sel.getAttribute("aria-label")) btn.setAttribute("aria-label", sel.getAttribute("aria-label"));
+
+  const list = document.createElement("ul");
+  list.className = "cselect__list";
+  list.setAttribute("role", "listbox");
+  list.innerHTML = [...sel.options]
+    .map((o, i) => `<li role="option" tabindex="-1" data-i="${i}"><span>${o.textContent}</span>${CHECK}</li>`)
+    .join("");
+
+  sel.tabIndex = -1;
+  sel.setAttribute("aria-hidden", "true");
+  wrap.prepend(btn);
+  wrap.append(list);
+
+  const items = $$("li", list);
+  const sync = () => {
+    btn.textContent = sel.options[sel.selectedIndex].textContent;
+    items.forEach((li, i) => {
+      li.classList.toggle("is-selected", i === sel.selectedIndex);
+      li.setAttribute("aria-selected", i === sel.selectedIndex);
+    });
+  };
+  const open = (on) => {
+    $$(".cselect.is-open").forEach((w) => w !== wrap && w.classList.remove("is-open"));
+    wrap.classList.toggle("is-open", on);
+    btn.setAttribute("aria-expanded", on);
+    if (on) (items[sel.selectedIndex] || items[0]).focus();
+  };
+  const choose = (i) => {
+    sel.selectedIndex = i;
+    sel.dispatchEvent(new Event("change", { bubbles: true }));
+    sync();
+    open(false);
+    btn.focus();
+  };
+
+  btn.addEventListener("click", () => open(!wrap.classList.contains("is-open")));
+  list.addEventListener("click", (e) => {
+    const li = e.target.closest("li");
+    if (li) choose(Number(li.dataset.i));
+  });
+  list.addEventListener("keydown", (e) => {
+    const i = items.indexOf(document.activeElement);
+    if (e.key === "ArrowDown") { e.preventDefault(); items[Math.min(i + 1, items.length - 1)].focus(); }
+    if (e.key === "ArrowUp") { e.preventDefault(); items[Math.max(i - 1, 0)].focus(); }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(i); }
+    if (e.key === "Escape" || e.key === "Tab") { open(false); btn.focus(); }
+  });
+  sel.addEventListener("change", sync);
+  sel.form?.addEventListener("reset", () => setTimeout(sync));
+  sync();
+}
+
+$$(".select select").forEach(enhanceSelect);
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".cselect")) $$(".cselect.is-open").forEach((w) => w.classList.remove("is-open"));
+});
 
 /* ---------------- NAV ON SCROLL ---------------- */
 const onScroll = () => document.body.classList.toggle("scrolled", window.scrollY > 40);

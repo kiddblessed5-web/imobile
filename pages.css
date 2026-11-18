@@ -1687,17 +1687,6 @@ body.menu-open {
   }
 }
 
-/* menu active link */
-.menu a.is-active::after {
-  content: "";
-  position: absolute;
-  right: -0.4em;
-  top: 0.12em;
-  width: 0.16em;
-  height: 0.16em;
-  border-radius: 50%;
-  background: var(--paper);
-}
 
 /* ================= RESPONSIVE ================= */
 @media (max-width: 1100px) {
@@ -2189,9 +2178,6 @@ body.scrolled .nav {
   fill: var(--accent);
 }
 
-.menu {
-  background: rgba(23, 15, 44, 0.94);
-}
 
 /* buttons */
 .button {
@@ -2655,11 +2641,6 @@ body.scrolled .nav {
   text-transform: none;
 }
 
-.menu a {
-  font-weight: 600;
-  letter-spacing: -0.045em;
-  text-transform: none;
-}
 
 .summary h2 {
   font-size: 24px;
@@ -3235,5 +3216,432 @@ html.lenis body {
       linear-gradient(180deg, var(--deep) 35%, rgba(23, 15, 44, 0.75)),
       url("assets/img/phones-teal-motion.jpg") 50% 40% / cover no-repeat,
       var(--deep);
+  }
+}
+
+/* =========================================================
+   V4 — dropdown menu, custom dropdowns, blurred footer, larger text
+   ========================================================= */
+
+/* ---------------- MENU: drops down from the nav ---------------- */
+.menu {
+  position: fixed;
+  z-index: 59;
+  top: calc(var(--nav-h) + 6px);
+  right: var(--pad);
+  width: min(400px, calc(100% - var(--pad) * 2));
+  padding: 8px;
+  border-radius: var(--r-box);
+  background: var(--paper);
+  box-shadow: 0 30px 60px -24px rgba(23, 15, 44, 0.45), 0 0 0 1px var(--line);
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 -10px;
+  clip-path: inset(0 0 100% 0 round var(--r-box));
+  transition: clip-path 0.55s var(--ease), translate 0.55s var(--ease), opacity 0.3s ease,
+    visibility 0s 0.55s;
+}
+
+body.menu-open .menu {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  clip-path: inset(0 0 0 0 round var(--r-box));
+  transition: clip-path 0.55s var(--ease), translate 0.55s var(--ease), opacity 0.3s ease;
+}
+
+/* dim the page behind the dropdown */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 58;
+  background: rgba(23, 15, 44, 0.35);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+body.menu-open::after {
+  opacity: 1;
+}
+
+.menu__links a {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 12px;
+  border-radius: var(--r-btn);
+  color: var(--ink);
+  opacity: 0;
+  translate: 0 8px;
+  transition: background-color 0.3s ease, opacity 0.4s ease, translate 0.5s var(--ease);
+}
+
+.menu__links a + a {
+  box-shadow: 0 -1px 0 var(--line);
+}
+
+body.menu-open .menu__links a {
+  opacity: 1;
+  translate: 0 0;
+}
+
+body.menu-open .menu__links a:nth-child(2) { transition-delay: 0.04s; }
+body.menu-open .menu__links a:nth-child(3) { transition-delay: 0.08s; }
+body.menu-open .menu__links a:nth-child(4) { transition-delay: 0.12s; }
+body.menu-open .menu__links a:nth-child(5) { transition-delay: 0.16s; }
+
+.menu__links a:hover,
+.menu__links a.is-active {
+  background: var(--tile);
+}
+
+.menu__num {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.menu__label {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.menu__go {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-btn);
+  background: var(--tile-2);
+  color: var(--ink);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.menu__go svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.4s var(--ease);
+}
+
+.menu__links a:hover .menu__go,
+.menu__links a.is-active .menu__go {
+  background: var(--accent);
+  color: var(--paper);
+}
+
+.menu__links a:hover .menu__go svg {
+  transform: rotate(45deg);
+}
+
+.menu__foot {
+  margin-top: 8px;
+  padding: 12px 4px 4px;
+  border-top: 1px solid var(--line);
+}
+
+.menu__foot .button {
+  height: 52px;
+  font-size: 14px;
+}
+
+.menu__foot p {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.menu__foot p a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ---------------- CUSTOM DROPDOWNS ---------------- */
+.cselect select {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cselect__btn {
+  position: relative;
+  width: 100%;
+  min-width: 190px;
+  height: 42px;
+  padding: 0 42px 0 14px;
+  border: 1px solid var(--tile-2);
+  border-radius: var(--r-btn);
+  background: var(--tile);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cselect__btn:hover,
+.cselect.is-open .cselect__btn {
+  border-color: var(--accent);
+}
+
+.cselect.is-open .cselect__btn {
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.cselect > svg {
+  z-index: 1;
+  transition: transform 0.4s var(--ease);
+}
+
+.cselect.is-open > svg {
+  transform: rotate(180deg);
+}
+
+.select--full .cselect__btn {
+  height: 54px;
+  padding-left: 18px;
+  background: var(--paper);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.cselect__list {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 100%;
+  padding: 6px;
+  border-radius: var(--r-box);
+  background: var(--paper);
+  box-shadow: 0 24px 48px -20px rgba(23, 15, 44, 0.4), 0 0 0 1px var(--line);
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 -6px;
+  clip-path: inset(0 0 100% 0 round var(--r-box));
+  transition: clip-path 0.4s var(--ease), translate 0.4s var(--ease), opacity 0.25s ease,
+    visibility 0s 0.4s;
+}
+
+.cselect.is-open .cselect__list {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  clip-path: inset(0 0 0 0 round var(--r-box));
+  transition: clip-path 0.4s var(--ease), translate 0.4s var(--ease), opacity 0.25s ease;
+}
+
+.cselect__list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 12px;
+  border-radius: var(--r-btn);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.cselect__list li:hover,
+.cselect__list li:focus {
+  background: var(--tile);
+}
+
+.cselect__list li svg {
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+  opacity: 0;
+}
+
+.cselect__list li.is-selected {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.cselect__list li.is-selected svg {
+  opacity: 1;
+}
+
+/* ---------------- FOOTER: blurred photo background ---------------- */
+.footer {
+  position: relative;
+  isolation: isolate;
+  background: #dcd6f3;
+  color: var(--ink);
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  inset: -60px;
+  z-index: -2;
+  background: url("assets/img/footer-bg.jpg") 50% 40% / cover no-repeat;
+  filter: blur(26px) saturate(1.15);
+}
+
+.footer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.12) 60%, rgba(255, 255, 255, 0.3));
+}
+
+.footer__brand p {
+  color: var(--ink-soft);
+}
+
+.footer h4 {
+  color: var(--ink);
+  opacity: 0.6;
+}
+
+.footer__contact li {
+  color: var(--ink-soft);
+}
+
+.footer .logo__bg {
+  fill: var(--accent);
+}
+
+.footer .logo__line {
+  stroke: var(--paper);
+}
+
+.footer .logo__solid {
+  fill: var(--paper);
+}
+
+.footer__word {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.footer__word:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.footer__bottom {
+  border-top-color: rgba(23, 15, 44, 0.14);
+  color: var(--ink-soft);
+}
+
+.pay li {
+  border-color: rgba(23, 15, 44, 0.18);
+  background: rgba(255, 255, 255, 0.45);
+  color: var(--ink);
+}
+
+/* ---------------- LARGER TEXT ---------------- */
+body {
+  font-size: 16px;
+}
+
+.nav__links a { font-size: 15px; }
+.nav__cta { font-size: 14px; }
+.button { font-size: 13px; }
+.ssub { font-size: 16px; }
+.slink { font-size: 15px; }
+.tabs button { font-size: 15px; }
+.crumbs { font-size: 13px; }
+.phead__lede { font-size: 17px; }
+.toolbar__count { font-size: 14px; }
+.filters .chip { font-size: 17px; }
+
+.ccard h3 { font-size: clamp(22px, 2vw, 30px); }
+.ccard p { font-size: 15px; }
+
+.pcard__name { font-size: 18px; }
+.pcard__meta { font-size: 14px; }
+.pcard__tagprice { font-size: 14px; }
+.pcard__buy { font-size: 14px; }
+.badge { font-size: 11px; }
+
+.promo p { font-size: 15px; }
+.why__item p { font-size: 16px; }
+.why__chip small { font-size: 13px; }
+.deals-band__intro .ssub { font-size: 16px; }
+.countdown small { font-size: 11px; }
+
+.tcard blockquote { font-size: 19px; }
+.tcard figcaption strong { font-size: 16px; }
+.tcard figcaption span { font-size: 15px; }
+
+.news__note { font-size: 14px; }
+.field { font-size: 16px; }
+
+.footer h4 { font-size: 13px; }
+.footer__links a,
+.footer__contact li,
+.footer__brand p { font-size: 16px; }
+.footer__bottom { font-size: 14px; }
+.pay li { font-size: 12px; }
+
+.hero__lede { font-size: 16px; max-width: 300px; }
+.hero__stat small { font-size: 14px; }
+.mini p { font-size: 14px; }
+.mini button { font-size: 13px; }
+
+.pd__brand { font-size: 14px; }
+.pd__blurb { font-size: 17px; }
+.opt__label { font-size: 13px; }
+.size { font-size: 14px; }
+.perks li { font-size: 14px; }
+.specs summary { font-size: 15px; }
+.specs dl,
+.specs p { font-size: 15px; }
+
+.line__opts { font-size: 14px; }
+.line__remove { font-size: 13px; }
+.summary dl { font-size: 15px; }
+.summary__note { font-size: 13px; }
+
+.clist small { font-size: 15px; }
+.cfield > span:first-child { font-size: 14px; }
+
+.toast { font-size: 15px; }
+
+@media (max-width: 760px) {
+  .pcard__name { font-size: 15px; }
+  .pcard__meta { font-size: 12px; }
+  .pcard__tagprice { font-size: 12px; }
+  .pcard__buy { font-size: 12px; }
+  .badge { font-size: 10px; }
+  .ccard p { font-size: 13px; }
+  .filters .chip { font-size: 16px; }
+  .hero__lede { font-size: 14px; max-width: 230px; }
+  .menu__label { font-size: 22px; }
+  .cselect__btn { min-width: 170px; }
+  .perks li { font-size: 13px; }
+}
+
+/* fixes: check icons in dropdown lists aren't the chevron; payment chips sit on one line */
+.cselect__list li svg {
+  position: static;
+  translate: none;
+  flex: none;
+}
+
+.footer .pay li + li {
+  margin-top: 0;
+}
+
+@media (max-width: 760px) {
+  .footer__top > div:last-child {
+    grid-column: 1 / -1;
   }
 }

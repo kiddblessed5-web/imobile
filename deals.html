@@ -71,18 +71,27 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
           Shop now
         </a>
-        <button class="nav__menu" aria-label="Open menu" aria-expanded="false">
+        <button class="nav__menu" aria-label="Open menu" aria-expanded="false" aria-controls="site-menu">
           <span></span><span></span><span></span>
         </button>
       </div>
     </header>
 
-    <div class="menu" aria-hidden="true">
-      <a href="index.html">Home</a>
-      <a href="phones.html">Phones</a>
-      <a href="accessories.html">Accessories</a>
-      <a href="deals.html">Deals</a>
-      <a href="contact.html">Contact</a>
+    <div class="menu" id="site-menu" aria-hidden="true">
+      <nav class="menu__links" aria-label="Menu">
+        <a href="index.html"><span class="menu__num">01</span><span class="menu__label">Home</span><span class="menu__go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
+        <a href="phones.html"><span class="menu__num">02</span><span class="menu__label">Phones</span><span class="menu__go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
+        <a href="accessories.html"><span class="menu__num">03</span><span class="menu__label">Accessories</span><span class="menu__go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
+        <a href="deals.html"><span class="menu__num">04</span><span class="menu__label">Deals</span><span class="menu__go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
+        <a href="contact.html"><span class="menu__num">05</span><span class="menu__label">Contact</span><span class="menu__go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
+      </nav>
+      <div class="menu__foot">
+        <a href="phones.html" class="button button--block">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Shop now
+        </a>
+        <p>Need help? <a href="contact.html">Talk to us</a></p>
+      </div>
     </div>
 
 
