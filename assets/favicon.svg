@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="10" fill="#7a3bd0"/>
+  <!-- phone outline -->
+  <rect x="20" y="10" width="24" height="44" rx="5" fill="none" stroke="#ffffff" stroke-width="3.5"/>
+  <!-- the "i" -->
+  <circle cx="32" cy="22" r="2.8" fill="#ffffff"/>
+  <rect x="29.6" y="27.5" width="4.8" height="16" rx="1.5" fill="#ffffff"/>
+  <!-- speaker slot -->
+  <rect x="28" y="14" width="8" height="1.8" rx="0.9" fill="#ffffff"/>
+</svg>

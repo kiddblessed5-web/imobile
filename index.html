@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iMobile Store — Phones, Wearables &amp; Accessories</title>
+  <meta name="description" content="Shop genuine smartphones, smartwatches, earbuds, chargers and accessories at iMobile." />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#7a3bd0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="pages.css" />
+</head>
+<body class="has-hero">
+
+  <!-- preloader -->
+  <div class="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <svg class="preloader__mark" viewBox="0 0 64 64">
+        <rect width="64" height="64" rx="10" class="logo__bg"/>
+        <rect x="20" y="10" width="24" height="44" rx="5" class="logo__line"/>
+        <circle cx="32" cy="22" r="2.8" class="logo__solid"/>
+        <rect x="29.6" y="27.5" width="4.8" height="16" rx="1.5" class="logo__solid"/>
+        <rect x="28" y="14" width="8" height="1.8" rx="0.9" class="logo__solid"/>
+      </svg>
+      <p class="preloader__word">iMobile<sup>&reg;</sup></p>
+      <div class="preloader__bar"><span data-pre-bar></span></div>
+      <p class="preloader__count"><span data-pre-count>0</span>%</p>
+    </div>
+  </div>
+
+  <!-- custom cursor -->
+  <div class="cursor" aria-hidden="true">
+    <span class="cursor__dot"></span>
+    <span class="cursor__ring"></span>
+  </div>
+
+  <!-- Nav + hero share exactly one screen -->
+  <div class="screen">
+    <header class="nav">
+      <div class="nav__left">
+        <a href="index.html" class="logo" aria-label="iMobile home">
+          <svg class="logo__mark" viewBox="0 0 64 64" aria-hidden="true">
+            <rect width="64" height="64" rx="10" class="logo__bg"/>
+            <rect x="20" y="10" width="24" height="44" rx="5" class="logo__line"/>
+            <circle cx="32" cy="22" r="2.8" class="logo__solid"/>
+            <rect x="29.6" y="27.5" width="4.8" height="16" rx="1.5" class="logo__solid"/>
+            <rect x="28" y="14" width="8" height="1.8" rx="0.9" class="logo__solid"/>
+          </svg>
+          <span class="logo__word">iMobile</span>
+        </a>
+        <nav class="nav__links" aria-label="Primary">
+          <a href="index.html">Home</a>
+          <a href="phones.html">Phones</a>
+          <a href="accessories.html">Accessories</a>
+          <a href="deals.html">Deals</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+
+      <div class="nav__right">
+        <a href="cart.html" class="nav__icon" aria-label="Cart">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+          <span class="nav__count">0</span>
+        </a>
+        <a href="phones.html" class="nav__cta button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Shop now
+        </a>
+        <button class="nav__menu" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="menu" aria-hidden="true">
+      <a href="index.html">Home</a>
+      <a href="phones.html">Phones</a>
+      <a href="accessories.html">Accessories</a>
+      <a href="deals.html">Deals</a>
+      <a href="contact.html">Contact</a>
+    </div>
+
+    <!-- ============ HERO ============ -->
+    <main class="hero">
+      <div class="hero__bg" aria-hidden="true"></div>
+
+      <p class="hero__lede">Genuine phones, wearables and accessories — with warranty on every device.</p>
+
+      <div class="hero__stat">
+        <b><span data-count="0" data-brand-count>0</span>+</b>
+        <small>Brands in stock</small>
+      </div>
+
+      <div class="hero__word">
+        <h1>iMobile<sup>®</sup></h1>
+        <span>Store</span>
+      </div>
+
+      <!-- featured product in the bottom-right cut-out (pick any product id) -->
+      <div class="hero__shop">
+        <article class="mini" data-hero-product="pulse-watch-2">
+          <a href="product.html?id=pulse-watch-2" class="mini__art" data-mini-art aria-label="Pulse Watch 2"></a>
+          <p data-mini-name>Pulse Watch 2</p>
+          <button type="button" data-add="pulse-watch-2" data-mini-buy>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            Buy
+          </button>
+        </article>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============ FEATURED CATEGORIES ============ -->
+  <section class="section">
+    <div class="wrap">
+      <div class="shead">
+        <div data-reveal>
+          <h2 class="stitle">Featured categories</h2>
+          <p class="ssub">Shop by your favourite category in seconds.</p>
+        </div>
+        <div class="shead__right" data-reveal="1">
+          <a href="phones.html" class="slink">Check all categories <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <div class="arrows">
+            <button type="button" data-crow-prev aria-label="Previous categories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+            <button type="button" data-crow-next aria-label="Next categories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="crow" data-crow>
+        <a href="phones.html" class="ccard cut" data-reveal="0">
+          <span class="cut__notch"><span class="chip-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></span>
+          <div class="ccard__art" data-art="phone" data-color="#cfd0d2"></div>
+          <div class="ccard__text"><h3>Phones</h3><p>Flagships, foldables and everyday 5G phones.</p></div>
+        </a>
+        <a href="accessories.html?sub=Smartwatches" class="ccard cut" data-reveal="1">
+          <span class="cut__notch"><span class="chip-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></span>
+          <div class="ccard__art" data-art="watch" data-color="#2d2d30"></div>
+          <div class="ccard__text"><h3>Smartwatches</h3><p>Track health, workouts and sleep.</p></div>
+        </a>
+        <a href="accessories.html?sub=Earbuds" class="ccard cut" data-reveal="2">
+          <span class="cut__notch"><span class="chip-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></span>
+          <div class="ccard__art" data-art="earbuds" data-color="#f1f0ed"></div>
+          <div class="ccard__text"><h3>Earbuds</h3><p>Noise cancelling and everyday wireless.</p></div>
+        </a>
+        <a href="phones.html?brand=tablets" class="ccard cut" data-reveal="3">
+          <span class="cut__notch"><span class="chip-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></span>
+          <div class="ccard__art" data-art="tablet" data-color="#3a3a3d"></div>
+          <div class="ccard__text"><h3>Tablets</h3><p>Big screens for work, study and play.</p></div>
+        </a>
+        <a href="accessories.html?sub=Chargers%20%26%20Cables" class="ccard cut" data-reveal="0">
+          <span class="cut__notch"><span class="chip-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></span>
+          <div class="ccard__art" data-art="charger" data-color="#f2f2f0"></div>
+          <div class="ccard__text"><h3>Chargers</h3><p>Fast GaN chargers and tough cables.</p></div>
+        </a>
+        <a href="accessories.html?sub=Power%20Banks" class="ccard cut" data-reveal="1">
+          <span class="cut__notch"><span class="chip-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></span>
+          <div class="ccard__art" data-art="powerbank" data-color="#232325"></div>
+          <div class="ccard__text"><h3>Power banks</h3><p>Stay charged through a long day out.</p></div>
+        </a>
+        <a href="accessories.html?sub=Cases" class="ccard cut" data-reveal="2">
+          <span class="cut__notch"><span class="chip-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></span>
+          <div class="ccard__art" data-art="case" data-color="#a9836a"></div>
+          <div class="ccard__text"><h3>Cases</h3><p>Protection that still looks good.</p></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOT PICKS ============ -->
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="shead">
+        <div data-reveal>
+          <h2 class="stitle">Hot picks for you</h2>
+          <p class="ssub">The devices everyone's asking for right now.</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Hot picks" data-reveal="1">
+          <button role="tab" class="is-active" aria-selected="true" data-tab="phones">Phones</button>
+          <button role="tab" aria-selected="false" data-tab="audio">Wearables &amp; Audio</button>
+          <button role="tab" aria-selected="false" data-tab="power">Power &amp; Cases</button>
+        </div>
+      </div>
+      <div class="pgrid" data-picks></div>
+    </div>
+  </section>
+
+  <!-- ============ WHY IMOBILE ============ -->
+  <section class="section why">
+    <div class="wrap">
+      <div class="shead">
+        <div data-reveal>
+          <h2 class="stitle">Why shop with us</h2>
+          <p class="ssub">Real stock, real warranty, real people to help.</p>
+        </div>
+        <a href="#" class="slink" data-reveal="1">Read our warranty <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+
+      <div class="why__grid">
+        <div class="why__photo" data-reveal>
+          <div class="why__chip">
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+            <div><strong>Official warranty</strong><small>On every phone and wearable</small></div>
+          </div>
+        </div>
+
+        <ol class="why__list">
+          <li class="why__item" data-reveal>
+            <span class="why__num">01</span>
+            <div><h3>Genuine &amp; sealed</h3><p>Every device is brand new in its original box, sourced from authorised distributors.</p></div>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
+          </li>
+          <li class="why__item" data-reveal="1">
+            <span class="why__num">02</span>
+            <div><h3>Fast delivery</h3><p>Express delivery in town and courier delivery countrywide, tracked all the way.</p></div>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></span>
+          </li>
+          <li class="why__item" data-reveal="2">
+            <span class="why__num">03</span>
+            <div><h3>Pay your way</h3><p>M-Pesa, card or cash on delivery — and instalment plans on selected phones.</p></div>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.2"/></svg></span>
+          </li>
+          <li class="why__item" data-reveal="3">
+            <span class="why__num">04</span>
+            <div><h3>Trade in &amp; save</h3><p>Bring your old phone and put its value towards a new one.</p></div>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg></span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WEEKEND DEALS ============ -->
+  <section class="section">
+    <div class="wrap">
+      <div class="deals-band">
+        <div class="deals-band__intro" data-reveal>
+          <div>
+            <h2 class="stitle">Prices drop now</h2>
+            <p class="ssub">Limited-time prices on phones, wearables and accessories. When the clock hits zero, they're gone.</p>
+          </div>
+          <div>
+            <div class="countdown" data-countdown aria-label="Time left on weekend deals">
+          <div><b data-d>00</b><small>Days</small></div>
+          <div><b data-h>00</b><small>Hours</small></div>
+          <div><b data-m>00</b><small>Mins</small></div>
+          <div><b data-s>00</b><small>Secs</small></div>
+        </div>
+            <a href="deals.html" class="button" style="margin-top:16px">See all deals <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+          </div>
+        </div>
+        <div class="deals-band__cards" data-home-deals></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <!-- Replace every [placeholder] with a real customer review (with their permission). -->
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="shead">
+        <div data-reveal>
+          <h2 class="stitle">What our customers say</h2>
+          <p class="ssub">Real reviews from people who shop with us.</p>
+        </div>
+        <a href="#" class="slink" data-reveal="1">Leave a review <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+
+      <div class="testi">
+        <figure class="tcard tcard--big" data-reveal>
+          <div class="tcard__copy">
+            <svg class="quote" viewBox="0 0 48 32" aria-hidden="true"><path d="M8 0h12L12 32H0zM34 0h12L38 32H26z"/></svg>
+            <blockquote>[Paste a real customer review here — what they bought, how delivery went, how they feel about it.]</blockquote>
+            <div class="stars" aria-label="5 out of 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg></div>
+            <figcaption><strong>[Customer name]</strong><span>[Town] · [Product bought]</span></figcaption>
+          </div>
+          <div class="tcard__photo" aria-hidden="true"></div>
+        </figure>
+
+        <div class="testi__side">
+          <figure class="tcard cut" data-reveal="1">
+            <svg class="quote" viewBox="0 0 48 32" aria-hidden="true"><path d="M8 0h12L12 32H0zM34 0h12L38 32H26z"/></svg>
+            <div class="stars" aria-label="5 out of 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg></div>
+            <blockquote>[Short review from a real customer.]</blockquote>
+            <figcaption class="tcard__who">
+              <span class="avatar">AB</span>
+              <span><strong>[Customer name]</strong><span>[Product bought]</span></span>
+            </figcaption>
+          </figure>
+          <figure class="tcard cut" data-reveal="2">
+            <svg class="quote" viewBox="0 0 48 32" aria-hidden="true"><path d="M8 0h12L12 32H0zM34 0h12L38 32H26z"/></svg>
+            <div class="stars" aria-label="5 out of 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg></div>
+            <blockquote>[Short review from a real customer.]</blockquote>
+            <figcaption class="tcard__who">
+              <span class="avatar">CD</span>
+              <span><strong>[Customer name]</strong><span>[Product bought]</span></span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NEWSLETTER ============ -->
+  <section class="wrap news">
+    <div>
+      <h2 class="stitle" data-reveal>Get new drops first</h2>
+      <p class="ssub" data-reveal="1">New arrivals and weekend deals, straight to your inbox.</p>
+    </div>
+    <div data-reveal="2">
+      <form class="news__form" data-newsletter>
+        <label for="email">Email address</label>
+        <input class="field" id="email" type="email" placeholder="you@email.com" required />
+        <button class="button" type="submit">Subscribe <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></button>
+      </form>
+      <p class="news__note">One email a week, at most. Unsubscribe any time.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer__top">
+        <div class="footer__brand" data-reveal>
+          <a href="index.html" class="logo" aria-label="iMobile home">
+            <svg class="logo__mark" viewBox="0 0 64 64" aria-hidden="true">
+              <rect width="64" height="64" rx="10" class="logo__bg"/>
+              <rect x="20" y="10" width="24" height="44" rx="5" class="logo__line"/>
+              <circle cx="32" cy="22" r="2.8" class="logo__solid"/>
+              <rect x="29.6" y="27.5" width="4.8" height="16" rx="1.5" class="logo__solid"/>
+              <rect x="28" y="14" width="8" height="1.8" rx="0.9" class="logo__solid"/>
+            </svg>
+            <span class="logo__word">iMobile</span>
+          </a>
+          <p>Genuine phones, wearables and accessories, with warranty and fast delivery.</p>
+          <div class="footer__social">
+            <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle class="fill" cx="16.8" cy="7.2" r="1"/></svg></a>
+            <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.6 2.2 4.3 5 4.5"/></svg></a>
+            <a href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4A8 8 0 1 1 8.4 19L4 20Z"/></svg></a>
+          </div>
+        </div>
+        <div data-reveal="1">
+          <h4>Shop</h4>
+          <ul class="footer__links">
+            <li><a href="phones.html">Phones</a></li>
+            <li><a href="phones.html?brand=tablets">Tablets</a></li>
+            <li><a href="accessories.html?sub=Smartwatches">Smartwatches</a></li>
+            <li><a href="accessories.html?sub=Earbuds">Earbuds</a></li>
+            <li><a href="deals.html">Deals</a></li>
+          </ul>
+        </div>
+        <div data-reveal="2">
+          <h4>Help</h4>
+          <ul class="footer__links">
+            <li><a href="#">Delivery</a></li>
+            <li><a href="#">Warranty &amp; repairs</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Trade-in</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+          </ul>
+        </div>
+        <div data-reveal="3">
+          <h4>Visit us</h4>
+          <ul class="footer__contact">
+            <li>[YOUR STORE ADDRESS]</li>
+            <li>[CITY]</li>
+            <li>[+254 7XX XXX XXX]</li>
+            <li>[hello@yourstore.co.ke]</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer__word" aria-hidden="true">iMobile<sup>&reg;</sup></div>
+    <div class="wrap">
+      <div class="footer__bottom">
+        <p>&copy; <span data-year>2026</span> iMobile. All rights reserved.</p>
+        <ul class="pay" aria-label="Payment methods">
+          <li>M-PESA</li><li>VISA</li><li>MASTERCARD</li><li>CASH ON DELIVERY</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+  <script src="home.js"></script>
+</body>
+</html>

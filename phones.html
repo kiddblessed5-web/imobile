@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phones — iMobile</title>
+  <meta name="description" content="Shop genuine smartphones and tablets at iMobile." />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#7a3bd0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="pages.css" />
+</head>
+<body>
+
+  <!-- preloader -->
+  <div class="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <svg class="preloader__mark" viewBox="0 0 64 64">
+        <rect width="64" height="64" rx="10" class="logo__bg"/>
+        <rect x="20" y="10" width="24" height="44" rx="5" class="logo__line"/>
+        <circle cx="32" cy="22" r="2.8" class="logo__solid"/>
+        <rect x="29.6" y="27.5" width="4.8" height="16" rx="1.5" class="logo__solid"/>
+        <rect x="28" y="14" width="8" height="1.8" rx="0.9" class="logo__solid"/>
+      </svg>
+      <p class="preloader__word">iMobile<sup>&reg;</sup></p>
+      <div class="preloader__bar"><span data-pre-bar></span></div>
+      <p class="preloader__count"><span data-pre-count>0</span>%</p>
+    </div>
+  </div>
+
+  <!-- custom cursor -->
+  <div class="cursor" aria-hidden="true">
+    <span class="cursor__dot"></span>
+    <span class="cursor__ring"></span>
+  </div>
+
+    <header class="nav">
+      <div class="nav__left">
+        <a href="index.html" class="logo" aria-label="iMobile home">
+          <svg class="logo__mark" viewBox="0 0 64 64" aria-hidden="true">
+            <rect width="64" height="64" rx="10" class="logo__bg"/>
+            <rect x="20" y="10" width="24" height="44" rx="5" class="logo__line"/>
+            <circle cx="32" cy="22" r="2.8" class="logo__solid"/>
+            <rect x="29.6" y="27.5" width="4.8" height="16" rx="1.5" class="logo__solid"/>
+            <rect x="28" y="14" width="8" height="1.8" rx="0.9" class="logo__solid"/>
+          </svg>
+          <span class="logo__word">iMobile</span>
+        </a>
+        <nav class="nav__links" aria-label="Primary">
+          <a href="index.html">Home</a>
+          <a href="phones.html">Phones</a>
+          <a href="accessories.html">Accessories</a>
+          <a href="deals.html">Deals</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+
+      <div class="nav__right">
+        <a href="cart.html" class="nav__icon" aria-label="Cart">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+          <span class="nav__count">0</span>
+        </a>
+        <a href="phones.html" class="nav__cta button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Shop now
+        </a>
+        <button class="nav__menu" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="menu" aria-hidden="true">
+      <a href="index.html">Home</a>
+      <a href="phones.html">Phones</a>
+      <a href="accessories.html">Accessories</a>
+      <a href="deals.html">Deals</a>
+      <a href="contact.html">Contact</a>
+    </div>
+
+
+  <section class="phead wrap">
+    <nav class="crumbs" aria-label="Breadcrumb" data-reveal><a href="index.html">Home</a><span>/</span><span>Phones</span></nav>
+    <h1 class="phead__title" data-reveal="1">Phones</h1>
+    <p class="phead__lede" data-reveal="2">Genuine, sealed smartphones and tablets with official warranty and fast delivery.</p>
+    <div class="banner banner--phones" data-reveal="2"><div class="banner__chips"><span>5G ready</span><span>Official warranty</span><span>Trade-in accepted</span></div></div>
+  </section>
+
+  <section class="wrap" style="padding-bottom:clamp(72px,9vw,120px)">
+    
+    <div class="filters">
+      <div class="filters__head">
+        <h2 class="filters__title">Brands</h2>
+        <div class="toolbar__right">
+          <p class="toolbar__count" data-count-label>0 products</p>
+          <label class="select">
+            <span class="sr-only">Sort by</span>
+            <select data-sort aria-label="Sort by">
+              <option value="featured">Featured</option>
+              <option value="low">Price: low to high</option>
+              <option value="high">Price: high to low</option>
+              <option value="name">Name A–Z</option>
+            </select>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </label>
+        </div>
+      </div>
+      <div class="chips" role="group" aria-label="Brands"><button class="chip is-active" data-filter="all">All</button></div>
+    </div>
+
+    <div class="pgrid" data-shop="phones"></div>
+  </section>
+
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer__top">
+        <div class="footer__brand" data-reveal>
+          <a href="index.html" class="logo" aria-label="iMobile home">
+            <svg class="logo__mark" viewBox="0 0 64 64" aria-hidden="true">
+              <rect width="64" height="64" rx="10" class="logo__bg"/>
+              <rect x="20" y="10" width="24" height="44" rx="5" class="logo__line"/>
+              <circle cx="32" cy="22" r="2.8" class="logo__solid"/>
+              <rect x="29.6" y="27.5" width="4.8" height="16" rx="1.5" class="logo__solid"/>
+              <rect x="28" y="14" width="8" height="1.8" rx="0.9" class="logo__solid"/>
+            </svg>
+            <span class="logo__word">iMobile</span>
+          </a>
+          <p>Genuine phones, wearables and accessories, with warranty and fast delivery.</p>
+          <div class="footer__social">
+            <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle class="fill" cx="16.8" cy="7.2" r="1"/></svg></a>
+            <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.6 2.2 4.3 5 4.5"/></svg></a>
+            <a href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4A8 8 0 1 1 8.4 19L4 20Z"/></svg></a>
+          </div>
+        </div>
+        <div data-reveal="1">
+          <h4>Shop</h4>
+          <ul class="footer__links">
+            <li><a href="phones.html">Phones</a></li>
+            <li><a href="phones.html?brand=tablets">Tablets</a></li>
+            <li><a href="accessories.html?sub=Smartwatches">Smartwatches</a></li>
+            <li><a href="accessories.html?sub=Earbuds">Earbuds</a></li>
+            <li><a href="deals.html">Deals</a></li>
+          </ul>
+        </div>
+        <div data-reveal="2">
+          <h4>Help</h4>
+          <ul class="footer__links">
+            <li><a href="#">Delivery</a></li>
+            <li><a href="#">Warranty &amp; repairs</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Trade-in</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+          </ul>
+        </div>
+        <div data-reveal="3">
+          <h4>Visit us</h4>
+          <ul class="footer__contact">
+            <li>[YOUR STORE ADDRESS]</li>
+            <li>[CITY]</li>
+            <li>[+254 7XX XXX XXX]</li>
+            <li>[hello@yourstore.co.ke]</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer__word" aria-hidden="true">iMobile<sup>&reg;</sup></div>
+    <div class="wrap">
+      <div class="footer__bottom">
+        <p>&copy; <span data-year>2026</span> iMobile. All rights reserved.</p>
+        <ul class="pay" aria-label="Payment methods">
+          <li>M-PESA</li><li>VISA</li><li>MASTERCARD</li><li>CASH ON DELIVERY</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+  <script src="shop.js"></script>
+</body>
+</html>
