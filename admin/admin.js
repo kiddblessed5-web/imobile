@@ -108,6 +108,13 @@ function download(name, text, type = "application/json") {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
+/* swap the view container for a clean copy so re-rendering never stacks event listeners */
+function fresh(host) {
+  const n = host.cloneNode(false);
+  host.replaceWith(n);
+  return n;
+}
+
 /* ---------------- state ---------------- */
 const S = { user: null, products: [], orders: [], messages: [], subscribers: [], content: {}, settings: {} };
 
@@ -115,8 +122,8 @@ async function refresh(...keys) {
   const all = !keys.length;
   const jobs = [];
   if (all || keys.includes("products")) jobs.push(Store.getProducts({ all: true }).then((v) => (S.products = v)));
-  if (all || keys.includes("orders")) jobs.push(Store.getOrders().then((v) => (S.orders = v)));
-  if (all || keys.includes("messages")) jobs.push(Store.getMessages().then((v) => (S.messages = v)));
+  if (all || keys.includes("orders")) jobs.push(Store.getOrders().then((v) => (S.orders = [...v].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)))));
+  if (all || keys.includes("messages")) jobs.push(Store.getMessages().then((v) => (S.messages = [...v].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)))));
   if (all || keys.includes("subscribers")) jobs.push(Store.getSubscribers().then((v) => (S.subscribers = v)));
   if (all || keys.includes("content")) jobs.push(Store.getContent().then((v) => (S.content = v)));
   if (all || keys.includes("settings")) jobs.push(Store.getSettings().then((v) => (S.settings = v)));
@@ -140,13 +147,13 @@ function badges() {
 
 /* ---------------- routing ---------------- */
 const VIEWS = {
-  overview: { title: "Overview", crumb: "Dashboard", render: viewOverview },
-  orders: { title: "Orders", crumb: "Sales", render: viewOrders },
-  products: { title: "Products", crumb: "Catalogue", render: viewProducts },
-  inbox: { title: "Inbox", crumb: "Customers", render: viewInbox },
-  subscribers: { title: "Subscribers", crumb: "Customers", render: viewSubscribers },
-  content: { title: "Site content", crumb: "Store front", render: viewContent },
-  settings: { title: "Settings", crumb: "Store", render: viewSettings },
+  overview: { title: "Overview", crumb: "Dashboard", sub: "Manage and track your store's orders, stock and customers in one place.", render: viewOverview },
+  orders: { title: "Orders", crumb: "Sales", sub: "Every order placed at checkout.", render: viewOrders },
+  products: { title: "Products", crumb: "Catalogue", sub: "Prices, stock, photos and what shows on the site.", render: viewProducts },
+  inbox: { title: "Inbox", crumb: "Customers", sub: "Messages from the contact page.", render: viewInbox },
+  subscribers: { title: "Subscribers", crumb: "Customers", sub: "People who joined the newsletter.", render: viewSubscribers },
+  content: { title: "Site content", crumb: "Store front", sub: "Every text on the store, in one place.", render: viewContent },
+  settings: { title: "Settings", crumb: "Store", sub: "Delivery, pricing, emails and backups.", render: viewSettings },
 };
 
 function route() {
@@ -155,6 +162,11 @@ function route() {
 }
 
 function buildNav() {
+  const pill = (v, count) =>
+    `<a href="#/${v}" data-nav="${v}">${VIEWS[v].title}${count ? `<span class="count" data-count-for="${count}" hidden>0</span>` : ""}</a>`;
+  $("[data-top-nav]").innerHTML =
+    pill("overview") + pill("orders", "orders") + pill("products") + pill("inbox", "inbox") +
+    pill("subscribers") + pill("content") + pill("settings");
   const item = (v, icon, count) =>
     `<a href="#/${v}" data-nav="${v}">${I[icon]}<span>${VIEWS[v].title}</span>${count ? `<span class="count" data-count-for="${count}" hidden>0</span>` : ""}</a>`;
   $("[data-side-nav]").innerHTML = `
@@ -169,6 +181,13 @@ async function render() {
   $$("[data-nav]").forEach((a) => a.classList.toggle("is-active", a.dataset.nav === view));
   $("[data-title]").textContent = VIEWS[view].title;
   $("[data-crumb]").textContent = VIEWS[view].crumb;
+  $("[data-sub]").textContent = VIEWS[view].sub || "";
+  $("[data-back-btn]").hidden = view === "overview";
+  $("[data-actions]").innerHTML =
+    view === "overview"
+      ? `<a class="btn hide-sm-btn" href="../index.html" target="_blank" rel="noopener">${I.ext} View store</a>
+         <a class="btn btn--grad" href="#/products/new">${I.plus} Add a product</a>`
+      : "";
   document.body.classList.remove("side-open");
   const host = $("[data-view]");
   try {
@@ -183,83 +202,333 @@ async function render() {
    OVERVIEW
    ========================================================= */
 function viewOverview(host) {
+  host = fresh(host);
+  const st = (viewOverview.st ||= { tab: "pending", pay: "all", from: "", to: "", q: "", town: "all", sel: null });
   const live = S.orders.filter((o) => o.status !== "cancelled");
-  const revenue = live.reduce((s, o) => s + (o.total || 0), 0);
-  const pending = S.orders.filter((o) => o.status === "pending").length;
-  const unread = S.messages.filter((m) => m.status === "unread").length;
-  const visible = S.products.filter((p) => p.visible !== false).length;
-  const sold = S.products.filter((p) => p.stock === 0).length;
-  const week = S.subscribers.filter((s) => Date.now() - new Date(s.created_at) < 7 * 864e5).length;
-  const low = S.products.filter((p) => p.stock > 0 && p.stock <= 3);
+  const sum = (list) => list.reduce((n, o) => n + (o.total || 0), 0);
+  const pct = (a, b) => (b ? Math.round(((a - b) / b) * 1000) / 10 : null);
+  const chg = (p, label) =>
+    p === null
+      ? `<p class="chg">No data ${label} yet</p>`
+      : `<p class="chg ${p >= 0 ? "up" : "down"}"><b>${p >= 0 ? "↑" : "↓"} ${Math.abs(p)}%</b>from ${label}</p>`;
+  const DAY = 864e5;
+  const now = Date.now();
 
-  // revenue by day, last 14 days
+  /* ---- 1. pending ---- */
+  const pending = S.orders.filter((o) => o.status === "pending");
+  const pendingOld = pending.filter((o) => now - new Date(o.created_at) > 2 * DAY).length;
+  const photos = S.products
+    .map((p) => p.colors?.find((c) => c.image)?.image || p.image)
+    .filter(Boolean)
+    .slice(0, 3);
+
+  /* ---- 2. revenue by month ---- */
+  const d0 = new Date();
+  const months = [...Array(6)].map((_, i) => ({ d: new Date(d0.getFullYear(), d0.getMonth() - 5 + i, 1), total: 0 }));
+  live.forEach((o) => {
+    const t = new Date(o.created_at);
+    const m = months.find((x) => x.d.getFullYear() === t.getFullYear() && x.d.getMonth() === t.getMonth());
+    if (m) m.total += o.total || 0;
+  });
+  const mMax = Math.max(1, ...months.map((m) => m.total));
+  const BW = 300, BH = 118;
+  const bars = months
+    .map((m, i) => {
+      const h = Math.max(6, (m.total / mMax) * (BH - 26));
+      const x = i * (BW / 6) + 9;
+      return `<g><title>${m.d.toLocaleDateString("en-KE", { month: "long" })}: ${money(m.total)}</title>
+        <rect class="${i === 5 ? "is-now" : ""}" x="${x}" y="${BH - 16 - h}" width="${BW / 6 - 18}" height="${h}" rx="3"/>
+        <text x="${x + (BW / 6 - 18) / 2}" y="${BH - 2}" text-anchor="middle">${m.d.toLocaleDateString("en-KE", { month: "short" })}</text></g>`;
+    })
+    .join("");
+
+  /* ---- 3. orders per day + average order value ---- */
   const days = [...Array(14)].map((_, i) => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
     d.setDate(d.getDate() - (13 - i));
-    return { d, total: 0 };
+    return { d, n: 0 };
   });
   live.forEach((o) => {
     const t = new Date(o.created_at);
     t.setHours(0, 0, 0, 0);
-    const slot = days.find((x) => +x.d === +t);
-    if (slot) slot.total += o.total || 0;
+    const x = days.find((y) => +y.d === +t);
+    if (x) x.n++;
   });
-  const max = Math.max(1, ...days.map((x) => x.total));
-  const W = 700, H = 200, bw = W / 14;
-  const bars = days
-    .map((x, i) => {
-      const h = Math.max(4, (x.total / max) * (H - 40));
-      const label = x.d.toLocaleDateString("en-KE", { day: "numeric", month: "short" });
-      return `<g><title>${label}: ${money(x.total)}</title>
-        <rect class="${x.total ? "has" : ""}" x="${i * bw + 8}" y="${H - 22 - h}" width="${bw - 16}" height="${h}" rx="3"/>
-        ${i % 2 === 0 ? `<text x="${i * bw + bw / 2}" y="${H - 4}" text-anchor="middle">${label}</text>` : ""}</g>`;
-    })
-    .join("");
+  const recent = live.filter((o) => now - new Date(o.created_at) < 14 * DAY);
+  const prev = live.filter((o) => { const a = now - new Date(o.created_at); return a >= 14 * DAY && a < 28 * DAY; });
+  const aov = recent.length ? sum(recent) / recent.length : live.length ? sum(live) / live.length : 0;
+  const aovPrev = prev.length ? sum(prev) / prev.length : 0;
+  const LW = 300, LH = 118;
+  const nMax = Math.max(1, ...days.map((x) => x.n));
+  const pts = days.map((x, i) => [8 + i * ((LW - 16) / 13), LH - 18 - (x.n / nMax) * (LH - 34)]);
+  const line = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+  const area = `${line} L${pts[13][0]} ${LH - 18} L${pts[0][0]} ${LH - 18} Z`;
 
-  const kpi = (icon, label, value, sub, href) => `
-    <a href="${href}" class="kpi cut"><span class="cut__notch"><span class="kpi__icon">${I[icon]}</span></span>
-      <p>${label}</p><strong>${value}</strong><small>${sub}</small></a>`;
+  /* ---- 4. revenue by payment method ---- */
+  const pays = [["M-Pesa", "M-Pesa"], ["Card", "Card"], ["Cash on delivery", "Cash"]].map(([k, label]) => ({
+    k, label, total: sum(live.filter((o) => o.payment === k)), n: live.filter((o) => o.payment === k).length,
+  }));
+  const topPay = pays.reduce((a, b) => (b.total > a.total ? b : a), pays[0]);
+
+  const ico = {
+    alert: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>',
+    cal: '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>',
+    clock: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    wallet: '<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.2"/></svg>',
+  };
+
+  const towns = [...new Set(S.orders.map((o) => o.customer?.town).filter(Boolean))].sort();
 
   host.innerHTML = `
-    <div class="kpis">
-      ${kpi("money", "Revenue", money(revenue), `${live.length} orders (excl. cancelled)`, "#/orders")}
-      ${kpi("orders", "Pending orders", pending, "Waiting to be confirmed", "#/orders")}
-      ${kpi("inbox", "Unread messages", unread, `${S.messages.length} in total`, "#/inbox")}
-      ${kpi("products", "Products live", `${visible}/${S.products.length}`, sold ? `${sold} sold out` : "All in stock", "#/products")}
-      ${kpi("subs", "Subscribers", S.subscribers.length, `+${week} this week`, "#/subscribers")}
+    <div class="stats">
+      <article class="stat stat--photo">
+        <div class="stat__top"><h2>Waiting to confirm</h2><span class="stat__ico stat__ico--bad">${ico.alert}</span></div>
+        <p class="stat__val"><small>KSh</small>${Math.round(sum(pending)).toLocaleString("en-KE")}</p>
+        <p class="chg ${pendingOld ? "down" : ""}"><b>${pending.length} order${pending.length === 1 ? "" : "s"}</b>${pendingOld ? `· ${pendingOld} older than 2 days` : "pending"}</p>
+        <div class="stat__viz">${photos.map((src) => `<img src="${esc(imgSrc(src))}" alt="" />`).join("")}</div>
+      </article>
+
+      <article class="stat">
+        <div class="stat__top"><h2>Revenue this month</h2><span class="stat__ico">${ico.cal}</span></div>
+        <p class="stat__val"><small>KSh</small>${Math.round(months[5].total).toLocaleString("en-KE")}</p>
+        ${chg(pct(months[5].total, months[4].total), "last month")}
+        <div class="stat__viz"><svg class="bars" viewBox="0 0 ${BW} ${BH}" role="img" aria-label="Revenue per month">
+          <defs><linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8b6cf0"/><stop offset="1" stop-color="#5a33c6"/></linearGradient></defs>${bars}</svg></div>
+      </article>
+
+      <article class="stat">
+        <div class="stat__top"><h2>Average order value</h2><span class="stat__ico stat__ico--info">${ico.clock}</span></div>
+        <p class="stat__val"><small>KSh</small>${Math.round(aov).toLocaleString("en-KE")}</p>
+        ${chg(pct(aov, aovPrev), "the 2 weeks before")}
+        <div class="stat__viz"><svg class="line" viewBox="0 0 ${LW} ${LH}" role="img" aria-label="Orders per day, last 14 days">
+          <defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a3bd0" stop-opacity=".28"/><stop offset="1" stop-color="#7a3bd0" stop-opacity="0"/></linearGradient></defs>
+          <path d="${area}" fill="url(#areaGrad)"/><path class="stroke" d="${line}"/>
+          ${pts.map((p, i) => (i % 2 === 1 || i === 13 ? `<circle cx="${p[0]}" cy="${p[1]}" r="3.5"><title>${days[i].d.toLocaleDateString("en-KE", { day: "numeric", month: "short" })}: ${days[i].n} orders</title></circle>` : "")).join("")}
+          <text x="8" y="${LH - 2}">${days[0].d.toLocaleDateString("en-KE", { day: "numeric", month: "short" })}</text>
+          <text x="${LW - 8}" y="${LH - 2}" text-anchor="end">Today</text></svg></div>
+      </article>
+
+      <article class="stat cut">
+        <span class="cut__notch"><a class="iconbtn" href="#/orders" aria-label="All orders">${I.ext}</a></span>
+        <div class="stat__top"><h2>Revenue by payment</h2><span class="stat__ico stat__ico--ok">${ico.wallet}</span></div>
+        <p class="stat__val"><small>KSh</small>${Math.round(sum(live)).toLocaleString("en-KE")}</p>
+        <p class="chg">${live.length} paid or open orders</p>
+        <div class="split">${pays.map((p) => `<div class="${p === topPay && p.total ? "is-top" : ""}"><b>${p.total ? money(p.total).replace("KSh ", "") : "—"}</b><span>${p.label} · ${p.n}</span></div>`).join("")}</div>
+        <div class="stat__foot"><button class="btn btn--sm btn--night" data-export-all>${I.download} Export orders</button></div>
+      </article>
     </div>
+
+    <div class="filters">
+      <p class="filters__label">Active filters <b data-fcount>0</b></p>
+      <select class="inp" data-f="pay" aria-label="Payment method">
+        <option value="all">All payments</option>${pays.map((p) => `<option value="${p.k}" ${st.pay === p.k ? "selected" : ""}>${p.label}</option>`).join("")}
+      </select>
+      <select class="inp" data-f="town" aria-label="Town">
+        <option value="all">All towns</option>${towns.map((t) => `<option ${st.town === t ? "selected" : ""}>${esc(t)}</option>`).join("")}
+      </select>
+      <input class="inp" type="date" data-f="from" value="${st.from}" aria-label="From date" />
+      <input class="inp" type="date" data-f="to" value="${st.to}" aria-label="To date" />
+      <label class="search">${I.search}<input class="inp" data-f="q" placeholder="Order #, name or phone" value="${esc(st.q)}" /></label>
+    </div>
+
+    <section class="board cut" data-board></section>
 
     <div class="grid grid--2">
       <section class="card">
-        <header class="card__head"><h2>Revenue — last 14 days</h2><a href="#/orders">All orders</a></header>
-        <div class="card__body"><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Revenue per day">
-          <line x1="0" x2="${W}" y1="${H - 22}" y2="${H - 22}"/>${bars}</svg></div>
-      </section>
-      <section class="card">
         <header class="card__head"><h2>Latest messages</h2><a href="#/inbox">Open inbox</a></header>
-        ${S.messages.length ? `<ul class="mini-list">${S.messages.slice(0, 5).map((m) => `
+        ${S.messages.length ? `<ul class="mini-list">${S.messages.slice(0, 4).map((m) => `
           <li><a href="#/inbox/${m.id}"><span class="ava">${initials(m.name)}</span>
             <span class="txt"><b>${esc(m.name)}${m.status === "unread" ? ' <span class="pill pill--unread">new</span>' : ""}</b><span>${esc(m.topic)} — ${esc(m.message)}</span></span>
             <time>${ago(m.created_at)}</time></a></li>`).join("")}</ul>`
           : `<div class="empty"><strong>No messages yet</strong>Messages from the contact form land here.</div>`}
       </section>
-    </div>
-
-    <div class="grid grid--2">
       <section class="card">
-        <header class="card__head"><h2>Recent orders</h2><a href="#/orders">View all</a></header>
-        ${ordersTable(S.orders.slice(0, 6))}
-      </section>
-      <section class="card">
-        <header class="card__head"><h2>Low stock</h2><a href="#/products">Products</a></header>
-        ${low.length || sold ? `<ul class="mini-list">${[...S.products.filter((p) => p.stock === 0), ...low].slice(0, 6).map((p) => `
-          <li><a href="#/products/${p.id}"><span class="thumb">${media(p)}</span>
-            <span class="txt"><b>${esc(p.name)}</b><span>${esc(p.brand || "")}</span></span>
-            <span class="pill ${p.stock === 0 ? "pill--out" : "pill--low"}">${p.stock === 0 ? "sold out" : p.stock + " left"}</span></a></li>`).join("")}</ul>`
-          : `<div class="empty"><strong>Stock looks healthy</strong>Products with 3 or fewer left show here.</div>`}
+        <header class="card__head"><h2>Stock alerts</h2><a href="#/products">Products</a></header>
+        ${(() => {
+          const low = [...S.products.filter((p) => p.stock === 0), ...S.products.filter((p) => p.stock > 0 && p.stock <= 3)].slice(0, 4);
+          return low.length
+            ? `<ul class="mini-list">${low.map((p) => `<li><a href="#/products/${p.id}"><span class="thumb">${media(p)}</span>
+                <span class="txt"><b>${esc(p.name)}</b><span>${esc(p.brand || "")}</span></span>
+                <span class="pill ${p.stock === 0 ? "pill--out" : "pill--low"}">${p.stock === 0 ? "sold out" : p.stock + " left"}</span></a></li>`).join("")}</ul>`
+            : `<div class="empty"><strong>Stock looks healthy</strong>Products with 3 or fewer left show here.</div>`;
+        })()}
       </section>
     </div>`;
+
+  /* ---------- dark orders board ---------- */
+  const TABS = [["all", "All orders"], ["pending", "Pending"], ["confirmed", "Confirmed"], ["shipped", "Shipped"]];
+  const NEXT = { pending: ["confirmed", "Confirm order"], confirmed: ["shipped", "Mark shipped"], shipped: ["delivered", "Mark delivered"] };
+
+  const filtered = () => {
+    const q = st.q.toLowerCase();
+    const from = st.from ? new Date(st.from + "T00:00") : null;
+    const to = st.to ? new Date(st.to + "T23:59:59") : null;
+    return S.orders.filter((o) => {
+      const t = new Date(o.created_at);
+      return (
+        (st.tab === "all" || o.status === st.tab) &&
+        (st.pay === "all" || o.payment === st.pay) &&
+        (st.town === "all" || o.customer?.town === st.town) &&
+        (!from || t >= from) && (!to || t <= to) &&
+        (!q || [o.number, o.customer?.name, o.customer?.phone].join(" ").toLowerCase().includes(q))
+      );
+    });
+  };
+
+  const drawBoard = () => {
+    const board = $("[data-board]", host);
+    const active = ["pay", "town"].filter((k) => st[k] !== "all").length + ["from", "to", "q"].filter((k) => st[k]).length;
+    $("[data-fcount]", host).textContent = active;
+    const list = filtered();
+    if (!list.find((o) => o.id === st.sel)) st.sel = list[0]?.id || null;
+    const o = list.find((x) => x.id === st.sel);
+    const count = (k) => S.orders.filter((x) => k === "all" || x.status === k).length;
+
+    const head = `
+      <div class="board__head"><h2>${TABS.find((t) => t[0] === st.tab)[1]}</h2>
+        <div class="board__tools"><a class="iconbtn" href="#/orders" aria-label="Open orders page">${I.orders}</a>
+          <button class="iconbtn" data-export-all aria-label="Export orders">${I.download}</button></div></div>
+      <span class="cut__notch"><span class="seg" role="tablist">${TABS.map(([k, l]) =>
+        `<button role="tab" data-tab="${k}" class="${st.tab === k ? "is-active" : ""}" aria-selected="${st.tab === k}">${l}${k === "all" ? "" : ` <small>${count(k)}</small>`}</button>`).join("")}</span><i></i></span>`;
+
+    if (!S.orders.length) {
+      board.innerHTML = head + `<div class="board__empty"><strong>No orders yet</strong>
+        <p>Orders placed at checkout appear here, ready to confirm and ship.</p>
+        <div class="bar"><a class="btn btn--white" href="../index.html" target="_blank" rel="noopener">Open the store</a>
+        ${Store.mode === "demo" ? `<button class="btn btn--grad" data-sample>${I.plus} Add sample data</button>` : ""}</div></div>`;
+      return;
+    }
+    if (!o) {
+      board.innerHTML = head + `<div class="board__empty"><strong>Nothing matches</strong><p>Try another tab or clear the filters.</p>
+        <div class="bar"><button class="btn btn--white" data-clear>Clear filters</button></div></div>`;
+      return;
+    }
+
+    const c = o.customer || {};
+    const phone = (c.phone || "").replace(/[^\d+]/g, "");
+    const wa = phone.replace(/^\+/, "").replace(/^0/, "254");
+    const items = o.items || [];
+    const next = NEXT[o.status];
+
+    board.innerHTML = head + `
+      <div class="olist">${list.map((x) => `
+        <button class="orow ${x.id === o.id ? "is-active" : ""}" data-pick="${x.id}">
+          <span class="ava">${initials(x.customer?.name)}</span>
+          <span class="orow__id"><b># ${esc(x.number)}</b><span>${ago(x.created_at)}</span></span>
+          <span class="orow__right"><b>${money(x.total || 0)}</b><span class="tag">${x.status}</span></span>
+        </button>`).join("")}</div>
+
+      <div class="odetail">
+        <div class="odetail__top">
+          <div><small>Order details</small><p class="odetail__num"># ${esc(o.number)} <span class="tag">${o.status}</span></p></div>
+          <div><small>Deliver to</small><p class="odetail__place">${esc(c.town || "—")}<span>${esc(c.address || "")}</span></p></div>
+          <div><small>Customer</small><div class="odetail__who"><span class="ava">${initials(c.name)}</span>
+            <div style="min-width:0"><b>${esc(c.name)}</b><span>${esc(c.phone)} · ${esc(o.payment)}</span></div></div></div>
+        </div>
+        <div class="itiles">
+          ${items.slice(0, 3).map((i) => `
+            <a class="itile" href="#/products/${encodeURIComponent(i.id)}">${I.ext}
+              <b><small>KSh</small>${Math.round(i.unit * i.qty).toLocaleString("en-KE")}</b>
+              <span>${i.qty} × ${esc(i.name)}${i.storage ? " · " + esc(i.storage) : ""}</span></a>`).join("")}
+          <a class="itile itile--add" href="#/orders/${o.id}">${I.plus}${items.length > 3 ? `+${items.length - 3} more · ` : ""}Open full order</a>
+        </div>
+        <div class="odetail__foot">
+          <dl><small>Sub total</small><b>${money(o.subtotal || 0)}</b></dl>
+          <dl><small>Delivery</small><b>${o.delivery ? money(o.delivery) : "Free"}</b></dl>
+          <dl><small>Total</small><b>${money(o.total || 0)}</b></dl>
+          <div class="odetail__act">
+            <a class="iconbtn" href="https://wa.me/${esc(wa)}" target="_blank" rel="noopener" aria-label="WhatsApp ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M4 20l1.2-4A8 8 0 1 1 8.4 19L4 20Z"/></svg></a>
+            <a class="iconbtn" href="tel:${esc(phone)}" aria-label="Call ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></a>
+            ${next ? `<button class="btn btn--white" data-advance="${next[0]}">${next[1]}</button>`
+              : `<a class="btn btn--white" href="#/orders/${o.id}">View order</a>`}
+          </div>
+        </div>
+      </div>`;
+  };
+
+  drawBoard();
+
+  host.addEventListener("input", (e) => {
+    const f = e.target.closest("[data-f]");
+    if (!f) return;
+    st[f.dataset.f] = f.value;
+    drawBoard();
+  });
+  host.addEventListener("click", async (e) => {
+    const t = e.target;
+    if (t.closest("[data-tab]")) { st.tab = t.closest("[data-tab]").dataset.tab; drawBoard(); }
+    else if (t.closest("[data-pick]")) { st.sel = t.closest("[data-pick]").dataset.pick; drawBoard(); }
+    else if (t.closest("[data-clear]")) {
+      Object.assign(st, { tab: "all", pay: "all", town: "all", from: "", to: "", q: "" });
+      viewOverview(host);
+    } else if (t.closest("[data-advance]")) {
+      const status = t.closest("[data-advance]").dataset.advance;
+      const o = S.orders.find((x) => x.id === st.sel);
+      await Store.updateOrder(o.id, { status });
+      toast(`Order ${o.number} marked ${status}`);
+      await refresh("orders");
+      viewOverview(host);
+    } else if (t.closest("[data-export-all]")) {
+      exportOrdersCSV();
+    } else if (t.closest("[data-sample]")) {
+      await addSampleData();
+      await refresh();
+      viewOverview(host);
+    }
+  });
+}
+
+function exportOrdersCSV() {
+  const rows = [["Order", "Date", "Name", "Phone", "Email", "Town", "Address", "Items", "Total", "Payment", "Status"]];
+  S.orders.forEach((o) =>
+    rows.push([o.number, o.created_at, o.customer?.name, o.customer?.phone, o.customer?.email, o.customer?.town, o.customer?.address,
+      (o.items || []).map((i) => `${i.qty}x ${i.name}`).join("; "), o.total, o.payment, o.status])
+  );
+  download("orders.csv", rows.map((r) => r.map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(",")).join("\n"), "text/csv");
+}
+
+/* demo only — fills the dashboard with clearly fictional sample orders */
+async function addSampleData() {
+  if (Store.mode !== "demo") return;
+  const names = ["Wanjiku Kamau", "Brian Otieno", "Achieng Odhiambo", "Kevin Mutua", "Faith Njeri", "Dennis Kiprop",
+    "Mercy Wambui", "Collins Omondi", "Grace Chebet", "Samuel Kariuki", "Joy Atieno", "Peter Maina"];
+  const towns = [["Nairobi", "Kilimani"], ["Nairobi", "Westlands"], ["Mombasa", "Nyali"], ["Kisumu", "Milimani"], ["Nakuru", "Section 58"], ["Eldoret", "Elgon View"], ["Thika", "Makongeni"]];
+  const pays = ["M-Pesa", "M-Pesa", "M-Pesa", "Card", "Cash on delivery"];
+  const prods = S.products.filter((p) => p.visible !== false);
+  const step = Number(S.settings.storage_step) || 0;
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+  const pick = (a) => a[Math.floor(rnd() * a.length)];
+  const ages = [0.1, 0.4, 0.9, 1.6, 2.5, 3.2, 5, 7, 9, 12, 16, 20, 26, 33, 41, 52, 64, 78, 95, 112, 130, 150];
+  for (const [i, age] of ages.entries()) {
+    const n = 1 + Math.floor(rnd() * 3);
+    const items = [...Array(n)].map(() => {
+      const p = pick(prods);
+      const storage = p.storage ? p.storage[0] : null;
+      return { id: p.id, name: p.name, color: p.colors[0].name, storage, qty: 1, unit: p.price };
+    });
+    const subtotal = items.reduce((t, x) => t + x.unit * x.qty, 0);
+    const delivery = subtotal >= (Number(S.settings.free_delivery_from) || 0) ? 0 : Number(S.settings.delivery_fee) || 0;
+    const name = names[i % names.length];
+    const [town, area] = pick(towns);
+    await Store.addOrder({
+      number: "IM-" + String(100231 + i * 37),
+      created_at: new Date(Date.now() - age * 864e5).toISOString(),
+      status: age < 1.8 ? "pending" : age < 4 ? "confirmed" : age < 8 ? "shipped" : i === 13 ? "cancelled" : "delivered",
+      customer: { name, phone: "07" + String(10000000 + Math.floor(rnd() * 89999999)), email: name.split(" ")[0].toLowerCase() + "@example.com", town, address: area },
+      payment: pick(pays), note: "Sample order (demo data)", items, subtotal, delivery, total: subtotal + delivery,
+    });
+  }
+  const msgs = [
+    ["Faith Njeri", "Product question", "Hi, is the Pulse Watch 2 compatible with Android phones?"],
+    ["Collins Omondi", "Trade-in", "I have a two-year-old phone in good condition. How much would you give me towards an Aero 15 Pro?"],
+    ["Joy Atieno", "Order or delivery", "Do you deliver to Kisumu on Saturdays?"],
+  ];
+  for (const [k, [name, topic, message]] of msgs.entries())
+    await Store.addMessage({ name, email: name.split(" ")[0].toLowerCase() + "@example.com", phone: "", topic, message, created_at: new Date(Date.now() - (k * 5 + 1) * 36e5).toISOString() });
+  for (const e of ["otieno@example.com", "wambui@example.com", "chebet@example.com", "maina@example.com"]) await Store.addSubscriber(e);
+  toast("Sample data added — clear it any time in Settings → Reset demo data");
 }
 
 /* =========================================================
@@ -282,6 +551,7 @@ function ordersTable(list) {
 }
 
 function viewOrders(host, id) {
+  host = fresh(host);
   const st = (viewOrders.st ||= { status: "all", q: "" });
   const draw = () => {
     const q = st.q.toLowerCase();
@@ -384,6 +654,7 @@ function openOrder(id) {
    PRODUCTS
    ========================================================= */
 function viewProducts(host, id) {
+  host = fresh(host);
   const st = (viewProducts.st ||= { q: "", cat: "all" });
   const draw = () => {
     const q = st.q.toLowerCase();
@@ -593,6 +864,7 @@ function openProduct(id) {
    INBOX
    ========================================================= */
 function viewInbox(host, id) {
+  host = fresh(host);
   const st = (viewInbox.st ||= { box: "inbox", q: "" });
   const boxes = {
     inbox: (m) => m.status !== "archived",
@@ -732,6 +1004,7 @@ function viewInbox(host, id) {
    SUBSCRIBERS
    ========================================================= */
 function viewSubscribers(host) {
+  host = fresh(host);
   const st = (viewSubscribers.st ||= { q: "" });
   const draw = () => {
     const list = S.subscribers.filter((s) => !st.q || s.email.includes(st.q.toLowerCase()));
@@ -773,6 +1046,7 @@ function viewSubscribers(host) {
    CONTENT
    ========================================================= */
 function viewContent(host) {
+  host = fresh(host);
   const c = S.content;
   const field = (key, label, { area = false, hint = "", type = "text" } = {}) =>
     `<label class="fld"><span>${label}</span>${area
@@ -853,6 +1127,7 @@ function viewContent(host) {
    SETTINGS
    ========================================================= */
 function viewSettings(host) {
+  host = fresh(host);
   const s = S.settings;
   const live = Store.mode === "live";
   host.innerHTML = `
@@ -999,6 +1274,9 @@ async function showApp() {
   $("[data-conn]").innerHTML = live
     ? "<strong>Live</strong><span>Connected to Supabase</span>"
     : "<strong>Demo mode</strong><span>Saved in this browser. See ADMIN.md to go live.</span>";
+  const chip = $("[data-conn-chip]");
+  chip.textContent = live ? "Live" : "Demo";
+  chip.classList.toggle("is-live", live);
   const email = S.user?.email || "admin";
   $("[data-user]").innerHTML = `<b>${initials(email.split("@")[0].replace(/[._-]/g, " "))}</b><span>${esc(email)}</span>`;
   await refresh();

@@ -3878,3 +3878,177 @@ body {
 .mini__art img {
   filter: drop-shadow(0 10px 14px rgba(23, 10, 60, 0.35));
 }
+
+/* =========================================================
+   V7 — phone marquee + newsletter field
+   ========================================================= */
+.marquee {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .marquee {
+    display: block;
+    overflow: hidden;
+    margin-top: 14px;
+    padding: 16px 0;
+    background: var(--paper);
+    border-block: 1px solid var(--line);
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 26s linear infinite;
+  }
+
+  .marquee__group {
+    display: flex;
+    align-items: center;
+  }
+
+  .marquee__group span {
+    padding: 0 14px;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .marquee__group span:nth-of-type(even) {
+    color: transparent;
+    -webkit-text-stroke: 1.2px var(--accent);
+  }
+
+  .marquee__group svg {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    fill: var(--accent);
+    stroke: none;
+  }
+
+  .marquee + .section {
+    padding-top: 48px;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    animation: none;
+  }
+}
+
+/* newsletter: one box with icon, input and button */
+.news__form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid var(--tile-2);
+  border-radius: var(--r-box);
+  background: var(--tile);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.news__form:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.news__field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 14px;
+  border-radius: var(--r-btn);
+  background: var(--paper);
+  color: var(--muted);
+}
+
+.news__field svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+.news__field input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  outline: none;
+}
+
+.news__field input::placeholder {
+  color: var(--muted);
+}
+
+.news__form .button {
+  flex: none;
+  height: 50px;
+}
+
+@media (max-width: 760px) {
+  .news__form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .news__field,
+  .news__form .button {
+    flex: none;
+    width: 100%;
+    height: 52px;
+  }
+
+  .news__form .button {
+    justify-content: center;
+  }
+}
+
+/* footer sits in an inset panel, like the hero */
+.footer {
+  margin: 0 var(--inset) var(--inset);
+  border-radius: var(--r-box);
+  overflow: hidden;
+}
+
+/* marquee text at footer-link size */
+@media (max-width: 760px) {
+  .marquee {
+    padding: 12px 0;
+  }
+
+  .marquee__group span {
+    padding: 0 12px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .marquee__group span:nth-of-type(even) {
+    color: var(--accent);
+    -webkit-text-stroke: 0;
+  }
+
+  .marquee__group svg {
+    width: 10px;
+    height: 10px;
+  }
+}
