@@ -294,7 +294,7 @@ function viewOverview(host) {
         <p class="stat__val"><small>KSh</small>${Math.round(months[5].total).toLocaleString("en-KE")}</p>
         ${chg(pct(months[5].total, months[4].total), "last month")}
         <div class="stat__viz"><svg class="bars" viewBox="0 0 ${BW} ${BH}" role="img" aria-label="Revenue per month">
-          <defs><linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8b6cf0"/><stop offset="1" stop-color="#5a33c6"/></linearGradient></defs>${bars}</svg></div>
+          <defs><linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4d5c"/><stop offset="1" stop-color="#c0121f"/></linearGradient></defs>${bars}</svg></div>
       </article>
 
       <article class="stat">
@@ -302,7 +302,7 @@ function viewOverview(host) {
         <p class="stat__val"><small>KSh</small>${Math.round(aov).toLocaleString("en-KE")}</p>
         ${chg(pct(aov, aovPrev), "the 2 weeks before")}
         <div class="stat__viz"><svg class="line" viewBox="0 0 ${LW} ${LH}" role="img" aria-label="Orders per day, last 14 days">
-          <defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a3bd0" stop-opacity=".28"/><stop offset="1" stop-color="#7a3bd0" stop-opacity="0"/></linearGradient></defs>
+          <defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e11d2e" stop-opacity=".28"/><stop offset="1" stop-color="#e11d2e" stop-opacity="0"/></linearGradient></defs>
           <path d="${area}" fill="url(#areaGrad)"/><path class="stroke" d="${line}"/>
           ${pts.map((p, i) => (i % 2 === 1 || i === 13 ? `<circle cx="${p[0]}" cy="${p[1]}" r="3.5"><title>${days[i].d.toLocaleDateString("en-KE", { day: "numeric", month: "short" })}: ${days[i].n} orders</title></circle>` : "")).join("")}
           <text x="8" y="${LH - 2}">${days[0].d.toLocaleDateString("en-KE", { day: "numeric", month: "short" })}</text>
@@ -1135,7 +1135,14 @@ function viewSettings(host) {
       <section class="card"><header class="card__head"><h2>Store</h2></header>
         <div class="card__body form-grid"><div class="two">
           <label class="fld"><span>Store name</span><input class="inp" name="store_name" value="${esc(s.store_name)}" /></label>
-          <label class="fld"><span>Brand colour</span><span class="bar"><input class="inp" type="color" name="accent" value="${esc(s.accent)}" /><small class="muted">Buttons, links and highlights on the store.</small></span></label>
+          <label class="fld"><span>Default theme for visitors</span><select class="inp" name="theme">
+            <option value="light" ${s.theme !== "dark" ? "selected" : ""}>Light — white & red</option>
+            <option value="dark" ${s.theme === "dark" ? "selected" : ""}>Dark — black & red</option></select>
+            <small>Visitors can still switch with the moon/sun button in the nav.</small></label>
+        </div>
+        <div class="two">
+          <label class="fld"><span>Light theme colour</span><span class="bar"><input class="inp" type="color" name="accent" value="${esc(s.accent)}" /><small class="muted">Buttons, links and highlights.</small></span></label>
+          <label class="fld"><span>Dark theme colour</span><span class="bar"><input class="inp" type="color" name="accent_dark" value="${esc(s.accent_dark || "#ff3347")}" /><small class="muted">Used on the black theme.</small></span></label>
         </div></div></section>
 
       <section class="card"><header class="card__head"><h2>Delivery & pricing</h2></header>
@@ -1180,7 +1187,7 @@ function viewSettings(host) {
   f.addEventListener("submit", async (e) => {
     e.preventDefault();
     const value = {};
-    $$("input[name]", f).forEach((el) => (value[el.name] = el.type === "number" ? Number(el.value || 0) : el.value.trim()));
+    $$("input[name], select[name]", f).forEach((el) => (value[el.name] = el.type === "number" ? Number(el.value || 0) : el.value.trim()));
     try {
       await Store.saveSettings(value);
       await refresh("settings");
@@ -1280,7 +1287,7 @@ async function showApp() {
   const email = S.user?.email || "admin";
   $("[data-user]").innerHTML = `<b>${initials(email.split("@")[0].replace(/[._-]/g, " "))}</b><span>${esc(email)}</span>`;
   await refresh();
-  document.documentElement.style.setProperty("--accent", S.settings.accent || "#7a3bd0");
+  document.documentElement.style.setProperty("--accent", S.settings.accent || "#e11d2e");
   render();
 
   // new messages / orders arrive while the dashboard is open

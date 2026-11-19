@@ -18,6 +18,7 @@ Open `admin/index.html` (or `/admin/` when deployed). It controls products, orde
 
 ## Files
 - `style.css` — base styles, nav, cursor, hero
+- `theme.css` — the dark theme (black + red): colour tokens and overrides
 - `pages.css` — every other section and page
 - `config.js` — Supabase keys (empty = demo mode)
 - `store.js` — data layer shared by the store and the dashboard
@@ -32,6 +33,9 @@ Open `admin/index.html` (or `/admin/` when deployed). It controls products, orde
 - **Preloader:** logo + letter reveal and a strip sweep on the first visit of a session; just the strip sweep after that and between pages (`motion.js`).
 - **Smooth scroll + animations:** Lenis and GSAP (ScrollTrigger, SplitText) are bundled in `assets/vendor/`, so they work offline. Visitors with reduced motion turned on get a simple fade instead.
 - **Testimonials:** the home page section holds `[placeholders]`. Replace them with real customer reviews (with permission) before going live.
+
+## Themes
+Main theme (white + red) and dark theme (black + red). Visitors switch with the moon/sun button in the nav, and their choice is remembered. Pick the default theme and each theme's accent colour in **Dashboard → Settings**.
 
 ## Editing
 - **Products, prices, stock, texts, delivery fees:** use the dashboard (`/admin`). `DEFAULT_CATALOGUE` in `data.js` is only the starter set.

@@ -41,7 +41,9 @@ const DEFAULT_SETTINGS = {
   free_delivery_from: 10000,
   storage_step: 15000,
   notify_email: "",
-  accent: "#7a3bd0",
+  accent: "#e11d2e",
+  accent_dark: "#ff3347",
+  theme: "light",
   demo_admin_email: "admin@demo.store",
   demo_admin_password: "demo1234",
 };
@@ -85,6 +87,11 @@ const Store = (() => {
             if (def && !hasPhoto) p.colors = def.colors;
           });
           d.catalogVersion = CATALOGUE_VERSION;
+          write(d);
+        }
+        // the main theme changed from violet to red: move untouched demo settings over
+        if (d.settings && /^#7a3bd0$/i.test(d.settings.accent || "")) {
+          d.settings.accent = "#e11d2e";
           write(d);
         }
         return d;

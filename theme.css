@@ -1,0 +1,346 @@
+/* =========================================================
+   iMobile — DARK THEME (black + cool red)
+   Turned on with  <html data-theme="dark">  (nav toggle, or the
+   default chosen in Dashboard → Settings). Light theme = no attribute.
+   Change the tokens below to re-tune the whole dark look.
+   ========================================================= */
+
+/* theme toggle (both themes) */
+.nav__theme {
+  border: 0;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.nav__theme svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.5s var(--ease), opacity 0.3s ease;
+}
+
+.nav__theme .i-sun {
+  display: none;
+}
+
+.nav__theme:hover svg {
+  transform: rotate(-25deg);
+}
+
+html[data-theme="dark"] .nav__theme .i-sun {
+  display: block;
+}
+
+html[data-theme="dark"] .nav__theme .i-moon {
+  display: none;
+}
+
+/* smooth cross-fade when switching */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: background-color 0.45s ease, color 0.45s ease, border-color 0.45s ease, fill 0.45s ease,
+    stroke 0.45s ease, filter 0.45s ease !important;
+}
+
+/* ---------------- tokens ---------------- */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0a0a0b;
+  --paper: #141416;       /* raised surfaces */
+  --tile: #161618;        /* cards */
+  --tile-2: #26262a;      /* chips inside cards */
+  --ink: #f4f0ef;         /* text */
+  --ink-soft: #cdc7c6;
+  --muted: #8e898b;
+  --line: rgba(255, 255, 255, 0.09);
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-line: rgba(255, 255, 255, 0.14);
+  --accent: #ff3347;      /* cool red */
+  --accent-dk: #d4142b;
+  --accent-soft: rgba(255, 51, 71, 0.16);
+  --hot: #ff3347;
+  --deep: #050506;
+  --on-accent: #ffffff;
+}
+
+html[data-theme="dark"] body {
+  background: var(--page);
+  color: var(--ink);
+}
+
+html[data-theme="dark"] ::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* white text on anything red or black */
+html[data-theme="dark"] :is(.button:not(.button--light):not(.button--line), .nav__cta, .btn-square, .countdown div,
+  .toast, .toast a, .done__tick, .avatar, .why__chip .icon, .chip.is-active, .badge, .badge--out, .nav__count,
+  .footer__social a, .socials a, .summary, .deal-hero, .promo, .mini, .menu__foot .button, .tile__go) {
+  color: #fff;
+}
+
+html[data-theme="dark"] .badge + .badge {
+  background: var(--paper);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--tile-2);
+}
+
+html[data-theme="dark"] .badge--out {
+  background: #fff !important;
+  color: #0a0a0b !important;
+}
+
+/* ---------------- nav ---------------- */
+html[data-theme="dark"] body.scrolled .nav {
+  background-color: rgba(10, 10, 11, 0.78);
+  box-shadow: 0 1px 0 var(--line);
+}
+
+html[data-theme="dark"] .nav__icon {
+  background: var(--tile-2);
+  color: var(--ink);
+}
+
+html[data-theme="dark"] .nav__menu {
+  background: var(--accent);
+}
+
+html[data-theme="dark"] .nav__menu span {
+  background: #fff;
+}
+
+html[data-theme="dark"] .logo__line {
+  stroke: #fff;
+}
+
+html[data-theme="dark"] .logo__solid {
+  fill: #fff;
+}
+
+html[data-theme="dark"] .menu {
+  background: var(--paper);
+  box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--line);
+}
+
+html[data-theme="dark"] body::after {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme="dark"] .menu__go {
+  background: var(--tile-2);
+  color: var(--ink);
+}
+
+html[data-theme="dark"] .menu__links a:hover .menu__go,
+html[data-theme="dark"] .menu__links a.is-active .menu__go {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ---------------- hero: monochrome photo with a red glow ---------------- */
+html[data-theme="dark"] .hero {
+  background: #0d0d0f;
+}
+
+html[data-theme="dark"] .hero__bg {
+  filter: grayscale(1) brightness(0.5) contrast(1.15);
+}
+
+html[data-theme="dark"] .hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(55% 60% at 62% 45%, rgba(255, 40, 60, 0.38), transparent 70%),
+    linear-gradient(to top, rgba(10, 10, 11, 0.75), transparent 45%);
+  mix-blend-mode: screen;
+}
+
+html[data-theme="dark"] .hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(5, 5, 6, 0.7), transparent 40%);
+}
+
+html[data-theme="dark"] .hero > :not(.hero__bg) {
+  z-index: 1;
+}
+
+html[data-theme="dark"] .hero__lede {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+html[data-theme="dark"] .hero__word {
+  color: #fff;
+}
+
+html[data-theme="dark"] .mini {
+  background: linear-gradient(170deg, #ff5a69 0%, #e0142c 55%, #7d0716 100%);
+  box-shadow: 0 20px 40px -20px rgba(255, 30, 50, 0.6);
+}
+
+html[data-theme="dark"] .mini button {
+  background: #fff;
+  color: #0a0a0b;
+}
+
+/* ---------------- sections ---------------- */
+html[data-theme="dark"] .marquee {
+  background: var(--paper);
+}
+
+html[data-theme="dark"] .marquee__group span:nth-of-type(even) {
+  color: var(--accent);
+}
+
+html[data-theme="dark"] .promo::after {
+  background: linear-gradient(to top, rgba(10, 10, 11, 0.96) 8%, rgba(120, 8, 24, 0.45) 60%, rgba(255, 40, 60, 0.05));
+}
+
+html[data-theme="dark"] .why {
+  background: var(--tile);
+}
+
+html[data-theme="dark"] .why__item .icon {
+  background: var(--paper);
+  border-color: var(--tile-2);
+}
+
+html[data-theme="dark"] .why__photo,
+html[data-theme="dark"] .banner,
+html[data-theme="dark"] .tcard__photo {
+  filter: grayscale(0.85) brightness(0.8) contrast(1.1);
+}
+
+html[data-theme="dark"] .deals-band__intro {
+  background: var(--tile);
+}
+
+html[data-theme="dark"] .deal-hero {
+  background:
+    linear-gradient(90deg, #050506 40%, rgba(5, 5, 6, 0.6) 70%, rgba(5, 5, 6, 0.25)),
+    url("assets/img/phones-teal-motion.jpg") 100% 35% / 55% auto no-repeat,
+    #050506;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+html[data-theme="dark"] .deal-hero .countdown div {
+  background: var(--accent);
+  color: #fff;
+}
+
+html[data-theme="dark"] .quote {
+  fill: rgba(255, 51, 71, 0.35);
+}
+
+html[data-theme="dark"] .connect {
+  background: #1a0d10;
+}
+
+html[data-theme="dark"] .connect::before {
+  filter: grayscale(0.3) brightness(0.7);
+}
+
+html[data-theme="dark"] .pcard__buy {
+  background: #fff;
+  color: #0a0a0b;
+}
+
+html[data-theme="dark"] :is(.pcard__art img, .ccard__art img, .pd__main img, .mini__art img) {
+  filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.6));
+}
+
+/* forms */
+html[data-theme="dark"] .field,
+html[data-theme="dark"] .cselect__btn,
+html[data-theme="dark"] .select select {
+  background-color: var(--tile);
+  border-color: var(--tile-2);
+  color: var(--ink);
+}
+
+html[data-theme="dark"] .cform .field,
+html[data-theme="dark"] .news__field,
+html[data-theme="dark"] .select--full .cselect__btn {
+  background: var(--paper);
+}
+
+html[data-theme="dark"] .cselect__list {
+  background: var(--paper);
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--line);
+}
+
+html[data-theme="dark"] .toolbar {
+  background: rgba(10, 10, 11, 0.85);
+}
+
+html[data-theme="dark"] .modal {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme="dark"] .buy {
+  background: rgba(10, 10, 11, 0.92);
+}
+
+/* summary + footer */
+html[data-theme="dark"] .summary {
+  background: #050506;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+html[data-theme="dark"] .summary .button--light {
+  background: var(--accent);
+  color: #fff;
+}
+
+html[data-theme="dark"] .footer {
+  background: #0d0708;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+html[data-theme="dark"] .footer::before {
+  filter: blur(26px) grayscale(1) brightness(0.35);
+}
+
+html[data-theme="dark"] .footer::after {
+  background:
+    radial-gradient(60% 70% at 70% 30%, rgba(255, 40, 60, 0.28), transparent 70%),
+    linear-gradient(180deg, rgba(10, 10, 11, 0.4), rgba(10, 10, 11, 0.1) 60%, rgba(10, 10, 11, 0.6));
+}
+
+html[data-theme="dark"] .footer .logo__bg {
+  fill: var(--accent);
+}
+
+html[data-theme="dark"] .footer__word {
+  color: rgba(255, 255, 255, 0.07);
+}
+
+html[data-theme="dark"] .footer__word:hover {
+  color: rgba(255, 51, 71, 0.25);
+}
+
+html[data-theme="dark"] .footer__bottom {
+  border-top-color: var(--line);
+}
+
+html[data-theme="dark"] .pay li {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--line);
+}
+
+/* preloader + cursor */
+html[data-theme="dark"] .loader__grid i,
+html[data-theme="dark"]:not(.has-motion) .loader {
+  background: #0a0a0b;
+}
+
+html[data-theme="dark"] .cursor.is-hover .cursor__ring {
+  background-color: rgba(255, 51, 71, 0.15);
+}

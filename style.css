@@ -543,10 +543,10 @@ body.menu-open .nav__menu span:nth-child(3) {
   width: clamp(150px, 12.5vw, 196px);
   padding: 14px 14px 14px;
   border-radius: var(--r-box);
-  background: linear-gradient(170deg, #a98bf0 0%, #7a3bd0 55%, #4b1f96 100%);
+  background: linear-gradient(170deg, #ff6b77 0%, #e11d2e 55%, #8a0b18 100%);
   color: var(--paper);
   text-align: center;
-  box-shadow: 0 20px 40px -24px rgba(74, 31, 150, 0.8);
+  box-shadow: 0 20px 40px -24px rgba(140, 12, 25, 0.8);
 }
 
 .mini__art {
@@ -769,6 +769,6 @@ body.menu-open .nav__menu span:nth-child(3) {
 
   body.has-hero:not(.scrolled) .nav__icon {
     background: var(--paper);
-    box-shadow: 0 6px 18px -10px rgba(23, 15, 44, 0.45);
+    box-shadow: 0 6px 18px -10px rgba(26, 12, 14, 0.45);
   }
 }

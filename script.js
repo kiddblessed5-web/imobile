@@ -465,12 +465,53 @@ function applyContent(content) {
   });
 }
 
-function applySettings(settings) {
-  if (settings.accent && /^#[0-9a-f]{6}$/i.test(settings.accent)) {
-    const root = document.documentElement.style;
-    root.setProperty("--accent", settings.accent);
-    root.setProperty("--accent-dk", shade(settings.accent, -35));
+/* ---------------- THEME (light / dark) ---------------- */
+const Theme = {
+  get() {
+    return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+  },
+  set(t, remember = true) {
+    const root = document.documentElement;
+    root.classList.add("theme-switching");
+    if (t === "dark") root.dataset.theme = "dark";
+    else delete root.dataset.theme;
+    if (remember) try { localStorage.setItem("imobile-theme", t); } catch {}
+    applyAccent();
+    $$("[data-theme-toggle]").forEach((b) =>
+      b.setAttribute("aria-label", t === "dark" ? "Switch to light theme" : "Switch to dark theme")
+    );
+    $('meta[name="theme-color"]')?.setAttribute("content", t === "dark" ? "#0a0a0b" : SITE.settings.accent || "#e11d2e");
+    setTimeout(() => root.classList.remove("theme-switching"), 500);
+  },
+};
+
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("[data-theme-toggle]")) return;
+  Theme.set(Theme.get() === "dark" ? "light" : "dark");
+});
+
+/* brand colours from the dashboard: one accent per theme */
+function applyAccent() {
+  const s = SITE.settings;
+  const accent = Theme.get() === "dark" ? s.accent_dark : s.accent;
+  const root = document.documentElement.style;
+  if (accent && /^#[0-9a-f]{6}$/i.test(accent)) {
+    root.setProperty("--accent", accent);
+    root.setProperty("--accent-dk", shade(accent, -35));
+  } else {
+    root.removeProperty("--accent");
+    root.removeProperty("--accent-dk");
   }
+}
+
+function applySettings(settings) {
+  // the owner's default theme applies until a visitor picks their own
+  try {
+    localStorage.setItem("imobile-theme-default", settings.theme || "light");
+    if (!localStorage.getItem("imobile-theme")) Theme.set(settings.theme === "dark" ? "dark" : "light", false);
+  } catch {}
+  applyAccent();
+  Theme.set(Theme.get(), false); // sync labels + theme-color
 }
 
 /* ---------------- PRELOADER ---------------- */
