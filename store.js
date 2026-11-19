@@ -81,10 +81,17 @@ const Store = (() => {
       if (d && d.products) {
         // newer starter photos: copy them onto untouched starter products
         if ((d.catalogVersion || 1) < CATALOGUE_VERSION) {
-          d.products.forEach((p) => {
+          const refreshed = ["echo-buds-pro", "echo-buds-go", "gan-65w", "braided-cable", "leather-case", "aero-tab-11"];
+          d.products.forEach((p, i) => {
             const def = DEFAULT_CATALOGUE.find((x) => x.id === p.id);
+            if (!def) return;
             const hasPhoto = p.image || (p.colors || []).some((c) => c.image);
-            if (def && !hasPhoto) p.colors = def.colors;
+            if (refreshed.includes(p.id) && !hasPhoto) d.products[i] = { ...def, visible: p.visible, stock: p.stock, position: p.position };
+            else if (!hasPhoto) p.colors = def.colors;
+          });
+          // starter products added in a newer version
+          DEFAULT_CATALOGUE.forEach((def, i) => {
+            if (!d.products.some((p) => p.id === def.id)) d.products.push({ visible: true, stock: 10, position: i, ...def });
           });
           d.catalogVersion = CATALOGUE_VERSION;
           write(d);

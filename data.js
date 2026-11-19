@@ -135,10 +135,7 @@ const DEFAULT_CATALOGUE = [
     category: "phones",
     type: "tablet",
     price: 74999,
-    colors: [
-      { name: "Space", hex: "#3a3a3d" },
-      { name: "Silver", hex: "#d4d5d7" },
-    ],
+    colors: [{ name: "Space Grey", hex: "#4a4a4d", image: "assets/products/tablet-pro-grey.webp" }, { name: "Lavender", hex: "#d9d2ea", image: "assets/products/tablet-air-lavender.webp" }],
     storage: ["128GB", "256GB"],
     blurb: "An 11\" tablet for work, study and streaming, with stylus support.",
     specs: {
@@ -169,6 +166,42 @@ const DEFAULT_CATALOGUE = [
     },
   },
 
+  {
+    id: "doodle-case",
+    name: "Doodle Art Case",
+    brand: "Shield",
+    category: "accessories",
+    sub: "Cases",
+    type: "case",
+    price: 3499,
+    tag: "New",
+    colors: [{ name: "Tangerine", hex: "#f08a1c", image: "assets/products/case-doodle-orange.webp" }],
+    blurb: "Bold hand-drawn artwork on a shock-absorbing case with a raised camera ring.",
+    specs: {
+      Protection: "2 m drop tested",
+      Fit: "Made for Aero 15 Pro",
+      Extras: "Raised camera ring",
+    },
+  },
+  {
+    id: "volt-pad-10",
+    name: "Volt Pad 10",
+    brand: "Volt",
+    category: "phones",
+    type: "tablet",
+    price: 28999,
+    was: 32999,
+    tag: "Value",
+    colors: [{ name: "Lilac", hex: "#a88be0", image: "assets/products/tablet-purple.webp" }],
+    storage: ["128GB", "256GB"],
+    blurb: "A big, bright 10.1\" screen for streaming, school and video calls, at an easy price.",
+    specs: {
+      Display: '10.1" IPS, 90Hz',
+      Camera: "13MP rear · 8MP front",
+      Battery: "7,000 mAh · 18W wired",
+      Network: "Wi-Fi · 4G LTE",
+    },
+  },
   /* ---------------- ACCESSORIES ---------------- */
   {
     id: "pulse-watch-2",
@@ -219,10 +252,7 @@ const DEFAULT_CATALOGUE = [
     type: "earbuds",
     price: 19999,
     tag: "Bestseller",
-    colors: [
-      { name: "White", hex: "#f1f0ed" },
-      { name: "Black", hex: "#232325" },
-    ],
+    colors: [{ name: "Red & Black", hex: "#d8261f", image: "assets/products/buds-red-black.webp" }, { name: "Matte Black", hex: "#1c1c1e", image: "assets/products/buds-black-cylinder.webp" }],
     blurb: "Active noise cancelling, spatial audio and 30 hours with the case.",
     specs: {
       "Noise cancelling": "Active (ANC)",
@@ -240,10 +270,7 @@ const DEFAULT_CATALOGUE = [
     type: "earbuds",
     price: 6999,
     was: 8499,
-    colors: [
-      { name: "Fog", hex: "#cfd2d4" },
-      { name: "Ink", hex: "#26262a" },
-    ],
+    colors: [{ name: "Midnight Lime", hex: "#1e2226", image: "assets/products/buds-case-lime.webp" }, { name: "Coral Orange", hex: "#f2582e", image: "assets/products/buds-orange.webp" }],
     blurb: "Everyday wireless earbuds with punchy sound and quick pairing.",
     specs: {
       Battery: "5h buds · 24h with case",
@@ -259,10 +286,7 @@ const DEFAULT_CATALOGUE = [
     sub: "Chargers & Cables",
     type: "charger",
     price: 4499,
-    colors: [
-      { name: "White", hex: "#f2f2f0" },
-      { name: "Black", hex: "#222224" },
-    ],
+    colors: [{ name: "White", hex: "#f2f2f0", image: "assets/products/charger-white-eu.webp" }, { name: "Black", hex: "#222224", image: "assets/products/charger-black-phone.webp" }],
     blurb: "One compact brick fast-charges your phone, tablet and laptop.",
     specs: {
       Output: "65W max · 2× USB-C · 1× USB-A",
@@ -272,21 +296,18 @@ const DEFAULT_CATALOGUE = [
   },
   {
     id: "braided-cable",
-    name: "Braided USB-C Cable 2m",
+    name: "20W Charger + Cable",
     brand: "Volt",
     category: "accessories",
     sub: "Chargers & Cables",
-    type: "cable",
-    price: 1499,
-    colors: [
-      { name: "Graphite", hex: "#2e2e31" },
-      { name: "Stone", hex: "#cbc8c1" },
-    ],
-    blurb: "Tough braided cable rated for 100W charging and fast data.",
+    type: "charger",
+    price: 2999,
+    colors: [{ name: "Black", hex: "#222224", image: "assets/products/charger-black-cable.webp" }, { name: "White", hex: "#f2f2f0", image: "assets/products/charger-white-cable.webp" }],
+    blurb: "A compact 20W USB-C fast charger with a matching 1 m cable in the box.",
     specs: {
-      Length: "2 m",
-      Power: "Up to 100W",
-      Build: "Nylon braided",
+      Output: "20W USB-C Power Delivery",
+      Cable: "1 m · USB-C or Lightning",
+      Plug: "UK 3-pin (Type G)",
     },
   },
   {
@@ -331,28 +352,25 @@ const DEFAULT_CATALOGUE = [
   },
   {
     id: "leather-case",
-    name: "Leather Folio Case",
+    name: "Silicone Case",
     brand: "Shield",
     category: "accessories",
     sub: "Cases",
     type: "case",
-    price: 3999,
-    colors: [
-      { name: "Tan", hex: "#a9836a" },
-      { name: "Black", hex: "#1f1f21" },
-    ],
-    blurb: "Genuine leather with card slots and a stand.",
+    price: 2999,
+    colors: [{ name: "Matcha", hex: "#a8c97a", image: "assets/products/case-silicone-trio.webp" }, { name: "Brick", hex: "#7c2a1e", image: "assets/products/case-silicone-trio.webp" }, { name: "Lemon", hex: "#f1c93a", image: "assets/products/case-silicone-trio.webp" }],
+    blurb: "Soft-touch silicone with a microfibre lining, in bright everyday colours.",
     specs: {
-      Material: "Genuine leather",
-      Extras: "2 card slots · stand",
-      Fit: "Made for Aero & Nova models",
+      Material: "Liquid silicone, microfibre lining",
+      Fit: "Made for Aero, Nova & Pixelline models",
+      Extras: "Raised camera lip",
     },
   },
 ];
 
 /* The live catalogue. store.js replaces it with the products saved in the
    admin dashboard (browser demo or Supabase) before the page renders. */
-const CATALOGUE_VERSION = 2; // bump when the starter photos/colours change
+const CATALOGUE_VERSION = 3; // bump when the starter photos/colours change
 let CATALOGUE = DEFAULT_CATALOGUE.map((p) => ({ visible: true, stock: 10, ...p }));
 
 /* ---------- helpers ---------- */

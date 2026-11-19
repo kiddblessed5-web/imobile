@@ -18,7 +18,11 @@ document.addEventListener("page:render", () => {
   // device artwork in category cards
   $$("[data-art]").forEach((el) => {
     // category cards: a real product photo where we have one, drawn artwork otherwise
-    const photo = { phone: "assets/products/phone-pro-silver.webp", watch: "assets/products/watch-ultra-orange.webp" }[el.dataset.art];
+    const photo = {
+      phone: "assets/products/phone-pro-silver.webp", watch: "assets/products/watch-ultra-orange.webp",
+      earbuds: "assets/products/buds-orange.webp", tablet: "assets/products/tablet-pro-grey.webp",
+      charger: "assets/products/charger-white-eu.webp", case: "assets/products/case-doodle-orange.webp",
+    }[el.dataset.art];
     el.innerHTML = photo ? `<img src="${photo}" alt="" loading="lazy" />` : deviceArt(el.dataset.art, el.dataset.color);
   });
 
