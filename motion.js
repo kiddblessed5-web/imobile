@@ -212,7 +212,7 @@
       onEnter: (batch) =>
         gsap.to(batch, {
           autoAlpha: 1, x: 0, y: 0, rotate: 0, scale: 1, duration: 1, stagger: 0.09,
-          ease: "power3.out", overwrite: true, clearProps: "transform",
+          ease: "power3.out", overwrite: "auto", clearProps: "transform",
         }),
     });
     splitHeadings(root);
@@ -265,6 +265,7 @@
     qa(".why__photo, .banner, .tcard__photo, .connect").forEach((el) => {
       gsap.fromTo(el, { clipPath: "inset(14% 10% 14% 10% round 5px)" }, {
         clipPath: "inset(0% 0% 0% 0% round 5px)", duration: 1.4, ease: "expo.out",
+        clearProps: "clipPath", // never leave the photo (or its label) cropped
         scrollTrigger: { trigger: el, start: "top 88%", once: true },
       });
       if (!el.matches(".connect")) {
