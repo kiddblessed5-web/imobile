@@ -4052,3 +4052,124 @@ body {
     height: 10px;
   }
 }
+
+/* =========================================================
+   V8 — strip preloader / page transition
+   ========================================================= */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  pointer-events: none;
+}
+
+body.is-loading .loader,
+body.is-leaving .loader {
+  pointer-events: auto;
+}
+
+.loader__grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 14), 1fr);
+  grid-template-rows: repeat(4, 1fr);
+}
+
+.loader__grid i {
+  display: block;
+  margin-right: -1px; /* no hairline gaps between strips */
+  margin-bottom: -1px;
+  background: #ece6fb;
+  transform-origin: 0% 50%;
+}
+
+.loader__brand {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.loader__mark {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-box);
+}
+
+.loader__word {
+  display: flex;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+  color: var(--ink);
+}
+
+.loader__word span {
+  display: inline-block;
+}
+
+.loader__tag,
+.loader__count {
+  position: absolute;
+  bottom: 22px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.loader__tag {
+  left: var(--pad);
+}
+
+.loader__count {
+  right: var(--pad);
+  font-variant-numeric: tabular-nums;
+}
+
+/* no GSAP (or reduced motion): solid screen that simply fades */
+html:not(.has-motion) .loader {
+  background: #ece6fb;
+  transition: opacity 0.5s ease, visibility 0.5s;
+  animation: loader-failsafe 0s 7s forwards;
+}
+
+html:not(.has-motion) body.loaded .loader {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@keyframes loader-failsafe {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* split-text helpers */
+.hc {
+  will-change: transform, filter;
+}
+
+.has-motion [data-reveal] {
+  will-change: transform, opacity;
+}
+
+@media (max-width: 760px) {
+  .loader__word {
+    font-size: 32px;
+  }
+
+  .loader__mark {
+    width: 40px;
+    height: 40px;
+  }
+
+  .loader__tag {
+    display: none;
+  }
+}

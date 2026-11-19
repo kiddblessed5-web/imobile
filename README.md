@@ -24,12 +24,13 @@ Open `admin/index.html` (or `/admin/` when deployed). It controls products, orde
 - `admin/` — the dashboard
 - `supabase/` — database schema and the email Edge Functions
 - `data.js` — **the starter product catalogue** (names, prices, colours, specs) and the drawn device artwork
+- `motion.js` — GSAP animations: preloader, page transitions, scroll effects (vendor files in `assets/vendor/`)
 - `script.js` — shared: cart (saved in the browser), menu, custom cursor, scroll animations, countdown
 - `home.js`, `shop.js`, `product.js`, `cart.js` — page-specific code
 
 ## Extras
-- **Preloader:** full version on the first visit of a session, a quick one after that (`runPreloader` in `script.js`).
-- **Smooth scroll:** Lenis, loaded from unpkg. If it can't load, the site falls back to native scrolling.
+- **Preloader:** logo + letter reveal and a strip sweep on the first visit of a session; just the strip sweep after that and between pages (`motion.js`).
+- **Smooth scroll + animations:** Lenis and GSAP (ScrollTrigger, SplitText) are bundled in `assets/vendor/`, so they work offline. Visitors with reduced motion turned on get a simple fade instead.
 - **Testimonials:** the home page section holds `[placeholders]`. Replace them with real customer reviews (with permission) before going live.
 
 ## Editing

@@ -245,6 +245,7 @@ const io = new IntersectionObserver(
 );
 
 function observeReveals(root = document) {
+  if (window.Motion?.on) return Motion.reveals(root);
   $$("[data-reveal]", root).forEach((el, i) => {
     if (el.classList.contains("reveal")) return;
     el.classList.add("reveal");
@@ -359,7 +360,7 @@ const heroSequence = [
   .map((s) => $(".screen " + s))
   .filter(Boolean);
 
-heroSequence.forEach((el) => el.classList.add("reveal"));
+if (!window.Motion?.on) heroSequence.forEach((el) => el.classList.add("reveal"));
 
 /* active nav link from the current file name */
 const page = location.pathname.split("/").pop() || "index.html";
@@ -371,7 +372,7 @@ $$(".nav__links a, .menu a").forEach((a) => {
 
 /* ---------------- INIT ---------------- */
 function init() {
-  heroSequence.forEach((el, i) =>
+  if (!window.Motion?.on) heroSequence.forEach((el, i) =>
     setTimeout(() => el.classList.add("is-in"), 100 + i * 110)
   );
   setTimeout(() => $$("[data-count]").forEach(countUp), 800);
@@ -385,12 +386,15 @@ let lenis = null;
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 if (window.Lenis && !reduceMotion) {
-  lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
-  const raf = (t) => {
-    lenis.raf(t);
+  lenis = new Lenis({ lerp: 0.085, smoothWheel: true, wheelMultiplier: 1 });
+  if (window.Motion?.on) Motion.bindLenis(lenis); // GSAP drives Lenis + ScrollTrigger
+  else {
+    const raf = (t) => {
+      lenis.raf(t);
+      requestAnimationFrame(raf);
+    };
     requestAnimationFrame(raf);
-  };
-  requestAnimationFrame(raf);
+  }
 
   // in-page anchor links glide too
   document.addEventListener("click", (e) => {
@@ -470,37 +474,16 @@ function applySettings(settings) {
 }
 
 /* ---------------- PRELOADER ---------------- */
-const preloader = $(".preloader");
+const preloader = $(".loader");
 
 function runPreloader() {
-  return new Promise((resolve) => {
-    if (!preloader) return resolve();
-    let first = true;
-    try {
-      first = !sessionStorage.getItem("imobile-loaded");
-      sessionStorage.setItem("imobile-loaded", "1");
-    } catch {}
-    const duration = reduceMotion ? 200 : first ? 1500 : 550;
-    const bar = $("[data-pre-bar]");
-    const count = $("[data-pre-count]");
-    const start = performance.now();
-    const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
-    let fontsDone = false;
-    fontsReady.then(() => (fontsDone = true));
-
-    const tick = (now) => {
-      let p = Math.min((now - start) / duration, 1);
-      if (!fontsDone && p > 0.9) p = 0.9; // wait at 90% until fonts are in
-      const eased = 1 - Math.pow(1 - p, 3);
-      bar.style.width = `${eased * 100}%`;
-      count.textContent = Math.round(eased * 100);
-      if (p < 1) requestAnimationFrame(tick);
-      else setTimeout(resolve, 120);
-    };
-    requestAnimationFrame(tick);
-    // never wait more than 4s
-    setTimeout(resolve, 4000);
-  });
+  if (window.Motion?.on) return Motion.preload();
+  // plain fallback: short wait for fonts, then fade (CSS)
+  const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
+  return Promise.race([
+    Promise.all([fonts, new Promise((r) => setTimeout(r, reduceMotion ? 150 : 600))]),
+    new Promise((r) => setTimeout(r, 3000)),
+  ]);
 }
 
 if (preloader) document.body.classList.add("is-loading");
@@ -511,7 +494,11 @@ function start() {
   started = true;
   document.body.classList.remove("is-loading");
   document.body.classList.add("loaded");
-  setTimeout(init, preloader ? 350 : 0);
+  if (window.Motion?.on) {
+    Motion.enter();
+    Motion.scroll();
+    init();
+  } else setTimeout(init, preloader ? 350 : 0);
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

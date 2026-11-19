@@ -19,20 +19,21 @@
 </head>
 <body>
 
-  <!-- preloader -->
-  <div class="preloader" aria-hidden="true">
-    <div class="preloader__inner">
-      <svg class="preloader__mark" viewBox="0 0 64 64">
+  <!-- preloader / page transition -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader__grid"></div>
+    <div class="loader__brand">
+      <svg class="loader__mark" viewBox="0 0 64 64">
         <rect width="64" height="64" rx="10" class="logo__bg"/>
         <rect x="20" y="10" width="24" height="44" rx="5" class="logo__line"/>
         <circle cx="32" cy="22" r="2.8" class="logo__solid"/>
         <rect x="29.6" y="27.5" width="4.8" height="16" rx="1.5" class="logo__solid"/>
         <rect x="28" y="14" width="8" height="1.8" rx="0.9" class="logo__solid"/>
       </svg>
-      <p class="preloader__word">iMobile<sup>&reg;</sup></p>
-      <div class="preloader__bar"><span data-pre-bar></span></div>
-      <p class="preloader__count"><span data-pre-count>0</span>%</p>
+      <span class="loader__word"><span>i</span><span>M</span><span>o</span><span>b</span><span>i</span><span>l</span><span>e</span></span>
     </div>
+    <p class="loader__tag">Phones · Wearables · Accessories</p>
+    <p class="loader__count"><span data-pre-count>0</span>%</p>
   </div>
 
   <!-- custom cursor -->
@@ -203,7 +204,11 @@
     </div>
   </footer>
 
-  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="assets/vendor/lenis.min.js"></script>
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script src="assets/vendor/ScrollTrigger.min.js"></script>
+  <script src="assets/vendor/SplitText.min.js"></script>
+  <script src="motion.js"></script>
   <script src="config.js"></script>
   <script src="data.js"></script>
   <script src="store.js"></script>
